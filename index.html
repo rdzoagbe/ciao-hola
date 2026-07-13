@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Daily Talk — Italiano · Español</title>
+<title>Ciao·Hola — Italiano · Español</title>
 <style>
   :root{
     --ink:#10141F; --paper:#F3F5F9; --card:#FFFFFF;
@@ -125,7 +125,7 @@
 <body>
 
 <header>
-  <div class="brand">Daily Talk</div>
+  <div class="brand">Ciao·Hola</div>
   <h1 id="hTitle">🇮🇹 Italiano, ogni giorno.</h1>
   <div class="sub">Dialogues · 100 % hors-ligne</div>
   <div class="stamp"><b id="streakNum">0</b><span>jours</span></div>
@@ -135,7 +135,7 @@
   <!-- ============ HOME ============ -->
   <div class="screen active" id="scr-home">
     <div class="installbar" id="installBar">
-      <b>📲 Installer Daily Talk sur ton téléphone</b>
+      <b>📲 Installer Ciao·Hola sur ton téléphone</b>
       Icône sur l'écran d'accueil, plein écran, hors-ligne.
       <button id="installBtn">Installer l'application</button>
     </div>
@@ -214,7 +214,7 @@
 "use strict";
 
 /* ================= DATA (générée depuis data.js) ================= */
-// Daily Talk — dialogues scénarisés IT / ES avec traduction française
+// Ciao·Hola — dialogues scénarisés IT / ES avec traduction française
 // Niveau A1–A2, phrases standard et vérifiées.
 
 const LANGS = {
@@ -648,7 +648,7 @@ function scheduleReminder(){
 function fireReminder(){
   const msg="C'est l'heure de tes 5 minutes d'italien / espagnol ! 🇮🇹🇪🇸";
   try{
-    if("Notification" in window && Notification.permission==="granted") new Notification("Daily Talk",{body:msg,icon:"icon-192.png"});
+    if("Notification" in window && Notification.permission==="granted") new Notification("Ciao·Hola",{body:msg,icon:"icon-192.png"});
     else toast(msg);
   }catch(e){ toast(msg); }
 }

@@ -1,5 +1,5 @@
-/* Daily Talk — service worker : cache complet pour usage 100% hors-ligne */
-const CACHE = "dailytalk-v1";
+/* Ciao·Hola — service worker : cache complet pour usage 100% hors-ligne */
+const CACHE = "ciaohola-v2";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (e) => {
@@ -13,13 +13,16 @@ self.addEventListener("activate", (e) => {
   );
 });
 self.addEventListener("fetch", (e) => {
+  if (e.request.method !== "GET") return;
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then(
       (cached) =>
         cached ||
         fetch(e.request).then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(e.request, copy));
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, copy));
+          }
           return res;
         }).catch(() => caches.match("./index.html"))
     )

@@ -1,19 +1,18 @@
-# Daily Talk IT·ES — PWA installable (GitHub Pages)
+# Ciao·Hola — PWA installable (GitHub Pages)
 
 App web installable pour apprendre l'italien et l'espagnol : dialogues hors-ligne,
 mode jeu de rôle, audio, série de jours. Aucun serveur, aucune donnée envoyée.
 
 ## Déploiement (5 minutes)
 
-Option A — nouveau dépôt :
-1. Crée un dépôt GitHub public, ex. `daily-talk`
-2. Pousse ces 5 fichiers à la racine :
-   index.html · manifest.webmanifest · sw.js · icon-192.png · icon-512.png
-3. Settings → Pages → Source : branche `main`, dossier `/ (root)` → Save
-4. URL : https://rdzoagbe.github.io/daily-talk/
+Les 5 fichiers sont à la racine de ce dépôt :
+index.html · manifest.webmanifest · sw.js · icon-192.png · icon-512.png
 
-Option B — sous-dossier de ton site Pages existant :
-copie les 5 fichiers dans un dossier `daily-talk/` de ton dépôt Pages.
+1. Settings → Pages → Source : branche `main`, dossier `/ (root)` → Save
+2. URL : https://rdzoagbe.github.io/ciao-hola/
+
+Alternative — sous-dossier de ton site Pages existant :
+copie les 5 fichiers dans un dossier `ciao-hola/` de ton dépôt Pages.
 Tous les chemins sont relatifs (`./`), donc ça fonctionne en sous-dossier.
 
 ## Installation sur Android
@@ -33,4 +32,5 @@ Paramètres Android → Synthèse vocale → Google TTS → télécharger Italia
 
 ## Mise à jour du contenu
 Modifie `DIALOGUES` dans index.html, pousse, puis dans sw.js incrémente
-`CACHE = "dailytalk-v2"` pour forcer le rafraîchissement du cache chez les clients.
+`CACHE = "ciaohola-v3"` (numéro suivant) pour forcer le rafraîchissement
+du cache chez les clients.
