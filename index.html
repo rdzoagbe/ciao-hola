@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#10141F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Daily Talk — Italiano · Español</title>
+<style>
+  :root{
+    --ink:#10141F; --paper:#F3F5F9; --card:#FFFFFF;
+    --cobalt:#2743E0; --sun:#FFC53D; --mute:#6B7280; --line:#E2E6EF; --ok:#12855F;
+    --radius:18px; font-size:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:ui-rounded,"SF Pro Rounded","Segoe UI",Roboto,system-ui,sans-serif;
+    background:var(--paper);color:var(--ink);min-height:100dvh;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  button{font:inherit;border:none;background:none;cursor:pointer;color:inherit;}
+  button:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:8px;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+  header{background:var(--ink);color:#fff;padding:20px 20px 26px;border-radius:0 0 28px 28px;position:relative;}
+  header .brand{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:#9AA4C0;font-weight:700;}
+  header h1{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-top:4px;}
+  header .sub{color:#B9C1D9;font-size:.88rem;margin-top:2px;}
+  .stamp{position:absolute;right:16px;top:16px;width:74px;height:74px;border-radius:50%;
+    border:3px solid var(--sun);color:var(--sun);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;transform:rotate(8deg);font-weight:800;line-height:1;
+    background:rgba(255,197,61,.08);}
+  .stamp b{font-size:1.5rem;} .stamp span{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;margin-top:3px;}
+
+  main{padding:18px 16px 40px;max-width:560px;margin:0 auto;}
+
+  .installbar{display:none;background:#FFF7E0;border:1px solid #F2E3AE;border-radius:14px;
+    padding:12px 14px;margin-bottom:16px;font-size:.85rem;line-height:1.5;}
+  .installbar b{display:block;margin-bottom:4px;}
+  .installbar button{background:var(--ink);color:#fff;font-weight:700;padding:8px 16px;border-radius:999px;font-size:.82rem;margin-top:8px;}
+
+  .langRow{display:flex;gap:8px;margin-bottom:16px;}
+  .langBtn{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:999px;
+    padding:12px;text-align:center;font-weight:700;color:var(--mute);font-size:.95rem;}
+  .langBtn.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  .today{background:var(--cobalt);color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:22px;
+    box-shadow:0 8px 24px rgba(39,67,224,.28);}
+  .today .tag{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#C9D2FF;}
+  .today h2{font-size:1.25rem;font-weight:800;margin:6px 0 2px;}
+  .today .fr{color:#D7DEFF;font-size:.9rem;}
+  .today .go{margin-top:14px;display:inline-block;background:var(--sun);color:var(--ink);
+    font-weight:800;padding:11px 20px;border-radius:999px;font-size:.95rem;}
+
+  .section-title{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:700;margin:0 0 10px 4px;}
+  .scenarios{display:flex;flex-direction:column;gap:10px;}
+  .scen{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;display:flex;align-items:center;gap:12px;text-align:left;width:100%;}
+  .scen .emo{font-size:1.5rem;width:44px;height:44px;border-radius:12px;background:var(--paper);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .scen .t{flex:1;min-width:0;} .scen .t b{display:block;font-size:.98rem;}
+  .scen .t small{color:var(--mute);font-size:.8rem;}
+  .scen .lvl{font-size:.68rem;font-weight:700;color:var(--cobalt);background:#E8ECFF;padding:3px 8px;border-radius:999px;flex-shrink:0;}
+  .scen .check{color:var(--ok);font-weight:800;font-size:1.1rem;display:none;flex-shrink:0;}
+  .scen.done .check{display:block;} .scen.done .emo{background:#E4F4ED;}
+
+  .screen{display:none;} .screen.active{display:block;}
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .back{font-size:1.3rem;padding:6px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line);}
+  .topbar h2{font-size:1.1rem;font-weight:800;flex:1;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .chip{border:1.5px solid var(--line);background:var(--card);padding:8px 14px;border-radius:999px;
+    font-size:.82rem;font-weight:700;color:var(--mute);}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  .bubbles{display:flex;flex-direction:column;gap:10px;}
+  .bub{max-width:86%;padding:12px 14px;border-radius:18px;font-size:.97rem;line-height:1.45;position:relative;}
+  .bub.A{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:6px;}
+  .bub.B{align-self:flex-end;background:var(--cobalt);color:#fff;border-bottom-right-radius:6px;}
+  .bub .who{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.55;display:block;margin-bottom:3px;}
+  .bub .fr{display:none;font-size:.82rem;margin-top:6px;opacity:.75;font-style:italic;}
+  .show-fr .bub .fr{display:block;}
+  .bub .speak{position:absolute;bottom:-6px;font-size:.85rem;width:28px;height:28px;border-radius:50%;
+    background:var(--sun);color:var(--ink);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.18);}
+  .bub.A .speak{right:-8px;} .bub.B .speak{left:-8px;}
+  .bub.hidden-line .txt,.bub.hidden-line .fr{filter:blur(7px);user-select:none;}
+  .bub.hidden-line::after{content:"👆 Dis ta réplique, puis touche pour vérifier";
+    position:absolute;inset:auto 12px 10px 12px;font-size:.68rem;font-weight:700;opacity:.85;}
+  .bub.hidden-line{padding-bottom:30px;}
+
+  .phrases{margin-top:26px;}
+  .phrase{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+  .phrase .p{flex:1;} .phrase b{display:block;font-size:.93rem;}
+  .phrase small{color:var(--mute);font-size:.8rem;}
+  .phrase .speak2{font-size:1rem;width:34px;height:34px;border-radius:50%;background:var(--paper);
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+
+  .complete{width:100%;margin-top:24px;background:var(--ink);color:#fff;font-weight:800;
+    padding:15px;border-radius:999px;font-size:1rem;}
+  .complete.done{background:var(--ok);}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+  .card h3{font-size:.95rem;margin-bottom:8px;}
+  .card p{font-size:.85rem;color:var(--mute);line-height:1.5;}
+  .card input[type=time]{font:inherit;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;
+    margin:10px 8px 10px 0;background:var(--paper);}
+  .btn{background:var(--cobalt);color:#fff;font-weight:700;padding:10px 18px;border-radius:999px;font-size:.88rem;}
+  .btn.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line);}
+  .note{font-size:.78rem;color:var(--mute);background:#FFF7E0;border:1px solid #F2E3AE;border-radius:12px;
+    padding:10px 12px;margin-top:10px;line-height:1.5;}
+  .navrow{display:flex;gap:8px;margin-top:22px;}
+  .navrow .chip{flex:1;text-align:center;padding:12px;}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:.88rem;
+    font-weight:700;transition:transform .25s ease;z-index:50;max-width:90vw;text-align:center;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Daily Talk</div>
+  <h1 id="hTitle">🇮🇹 Italiano, ogni giorno.</h1>
+  <div class="sub">Dialogues · 100 % hors-ligne</div>
+  <div class="stamp"><b id="streakNum">0</b><span>jours</span></div>
+</header>
+
+<main>
+  <!-- ============ HOME ============ -->
+  <div class="screen active" id="scr-home">
+    <div class="installbar" id="installBar">
+      <b>📲 Installer Daily Talk sur ton téléphone</b>
+      Icône sur l'écran d'accueil, plein écran, hors-ligne.
+      <button id="installBtn">Installer l'application</button>
+    </div>
+
+    <div class="langRow" id="langRow"></div>
+
+    <div class="today">
+      <div class="tag">Dialogue du jour</div>
+      <h2 id="todayTitle">—</h2>
+      <div class="fr" id="todayFr">—</div>
+      <button class="go" id="todayGo">Commencer →</button>
+    </div>
+
+    <div class="section-title">Tous les scénarios</div>
+    <div class="scenarios" id="scenList"></div>
+
+    <div class="navrow">
+      <button class="chip" id="openSettings">⚙️ Rappel &amp; réglages</button>
+    </div>
+  </div>
+
+  <!-- ============ DIALOGUE ============ -->
+  <div class="screen" id="scr-dialog">
+    <div class="topbar">
+      <button class="back" data-nav="home">←</button>
+      <h2 id="dTitle">—</h2>
+    </div>
+    <div class="controls">
+      <button class="chip" id="modeRead">📖 Lire</button>
+      <button class="chip" id="modePractA">🎭 Jouer A</button>
+      <button class="chip" id="modePractB">🎭 Jouer B</button>
+      <button class="chip" id="toggleFr">🇫🇷 Traduction</button>
+      <button class="chip" id="playAll">▶️ Tout écouter</button>
+    </div>
+    <div class="bubbles" id="bubbles"></div>
+    <div class="phrases">
+      <div class="section-title">Phrases clés à retenir</div>
+      <div id="phraseList"></div>
+    </div>
+    <button class="complete" id="btnComplete">✓ Marquer comme pratiqué</button>
+  </div>
+
+  <!-- ============ RÉGLAGES ============ -->
+  <div class="screen" id="scr-settings">
+    <div class="topbar">
+      <button class="back" data-nav="home">←</button>
+      <h2>Rappel &amp; réglages</h2>
+    </div>
+    <div class="card">
+      <h3>🔔 Rappel quotidien (app ouverte)</h3>
+      <p>Notification à l'heure choisie tant que l'app est ouverte ou récente en arrière-plan.</p>
+      <input type="time" id="remTime" value="19:00">
+      <button class="btn" id="remSave">Activer</button>
+      <button class="btn ghost" id="remOff">Désactiver</button>
+      <div class="note">
+        <b>Limite technique (vérifiée) :</b> une app web ne peut pas réveiller le téléphone quand elle est fermée.
+        Pour un rappel fiable à 100 % : <b>Horloge Google → Alarme quotidienne « Italien/Espagnol »</b>
+        ou un événement récurrent Google Agenda avec notification.
+      </div>
+    </div>
+    <div class="card">
+      <h3>🗣️ Voix hors-ligne</h3>
+      <p>Paramètres Android → Synthèse vocale → Google TTS → télécharger les voix <b>Italiano</b> et <b>Español</b>. Sans cela, l'audio nécessite internet.</p>
+    </div>
+    <div class="card">
+      <h3>📊 Progression</h3>
+      <p id="progText">—</p>
+      <button class="btn ghost" id="resetBtn" style="margin-top:10px;">Réinitialiser la progression</button>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ================= DATA (générée depuis data.js) ================= */
+// Daily Talk — dialogues scénarisés IT / ES avec traduction française
+// Niveau A1–A2, phrases standard et vérifiées.
+
+const LANGS = {
+  it: { flag: "🇮🇹", name: "Italiano", tts: "it-IT" },
+  es: { flag: "🇪🇸", name: "Español", tts: "es-ES" },
+};
+
+const DIALOGUES = {
+  /* ==================== ITALIEN ==================== */
+  it: [
+    {
+      id: "it-presentarsi", emo: "👋", level: "A1", title: "Presentarsi", fr: "Se présenter",
+      lines: [
+        { s: "A", tx: "Ciao! Come ti chiami?", fr: "Salut ! Comment tu t'appelles ?" },
+        { s: "B", tx: "Mi chiamo Marco. E tu?", fr: "Je m'appelle Marco. Et toi ?" },
+        { s: "A", tx: "Io sono Giulia. Piacere di conoscerti!", fr: "Moi, c'est Giulia. Enchantée !" },
+        { s: "B", tx: "Piacere mio. Di dove sei?", fr: "Enchanté. Tu viens d'où ?" },
+        { s: "A", tx: "Sono di Parigi, ma abito a Roma da un anno.", fr: "Je viens de Paris, mais j'habite à Rome depuis un an." },
+        { s: "B", tx: "Che bello! E che lavoro fai?", fr: "Super ! Et qu'est-ce que tu fais dans la vie ?" },
+        { s: "A", tx: "Lavoro nell'informatica. E tu?", fr: "Je travaille dans l'informatique. Et toi ?" },
+        { s: "B", tx: "Io sono insegnante. Benvenuta a Roma!", fr: "Moi, je suis enseignant. Bienvenue à Rome !" },
+      ],
+      phrases: [
+        { tx: "Come ti chiami?", fr: "Comment tu t'appelles ?" },
+        { tx: "Piacere di conoscerti!", fr: "Enchanté(e) !" },
+        { tx: "Di dove sei?", fr: "Tu viens d'où ?" },
+        { tx: "Che lavoro fai?", fr: "Qu'est-ce que tu fais comme travail ?" },
+      ],
+    },
+    {
+      id: "it-ristorante", emo: "🍝", level: "A2", title: "Al ristorante", fr: "Au restaurant",
+      lines: [
+        { s: "A", tx: "Buonasera! Un tavolo per due, per favore.", fr: "Bonsoir ! Une table pour deux, s'il vous plaît." },
+        { s: "B", tx: "Certo, prego, da questa parte. Ecco il menù.", fr: "Bien sûr, par ici. Voici le menu." },
+        { s: "A", tx: "Grazie. Che cosa ci consiglia?", fr: "Merci. Que nous conseillez-vous ?" },
+        { s: "B", tx: "Le lasagne sono ottime, e il pesce è freschissimo.", fr: "Les lasagnes sont excellentes, et le poisson est très frais." },
+        { s: "A", tx: "Allora prendo le lasagne e un bicchiere di vino rosso.", fr: "Alors je prends les lasagnes et un verre de vin rouge." },
+        { s: "B", tx: "Perfetto. E da bere, dell'acqua?", fr: "Parfait. Et à boire, de l'eau ?" },
+        { s: "A", tx: "Sì, acqua naturale, grazie.", fr: "Oui, de l'eau plate, merci." },
+        { s: "B", tx: "Benissimo. Buon appetito!", fr: "Très bien. Bon appétit !" },
+        { s: "A", tx: "Grazie! Più tardi, il conto per favore.", fr: "Merci ! Plus tard, l'addition s'il vous plaît." },
+      ],
+      phrases: [
+        { tx: "Un tavolo per due, per favore.", fr: "Une table pour deux, s'il vous plaît." },
+        { tx: "Che cosa ci consiglia?", fr: "Que nous conseillez-vous ?" },
+        { tx: "Prendo le lasagne.", fr: "Je prends les lasagnes." },
+        { tx: "Il conto, per favore.", fr: "L'addition, s'il vous plaît." },
+      ],
+    },
+    {
+      id: "it-indicazioni", emo: "🗺️", level: "A2", title: "Chiedere indicazioni", fr: "Demander son chemin",
+      lines: [
+        { s: "A", tx: "Scusi, sto cercando la stazione. È lontana?", fr: "Excusez-moi, je cherche la gare. C'est loin ?" },
+        { s: "B", tx: "No, è vicina. Vada dritto e poi giri a sinistra al semaforo.", fr: "Non, c'est tout près. Allez tout droit puis tournez à gauche au feu." },
+        { s: "A", tx: "Dritto, poi a sinistra al semaforo. Va bene.", fr: "Tout droit, puis à gauche au feu. D'accord." },
+        { s: "B", tx: "Sì, la stazione è sulla destra, a cinque minuti a piedi.", fr: "Oui, la gare est sur la droite, à cinq minutes à pied." },
+        { s: "A", tx: "C'è anche una farmacia da queste parti?", fr: "Il y a aussi une pharmacie dans le coin ?" },
+        { s: "B", tx: "Sì, proprio accanto alla banca.", fr: "Oui, juste à côté de la banque." },
+        { s: "A", tx: "Perfetto, grazie mille per l'aiuto!", fr: "Parfait, merci beaucoup pour votre aide !" },
+        { s: "B", tx: "Prego, buona giornata!", fr: "Je vous en prie, bonne journée !" },
+      ],
+      phrases: [
+        { tx: "Sto cercando la stazione.", fr: "Je cherche la gare." },
+        { tx: "Vada dritto.", fr: "Allez tout droit." },
+        { tx: "Giri a sinistra.", fr: "Tournez à gauche." },
+        { tx: "Grazie mille per l'aiuto!", fr: "Merci beaucoup pour votre aide !" },
+      ],
+    },
+    {
+      id: "it-mercato", emo: "🍎", level: "A1", title: "Al mercato", fr: "Au marché",
+      lines: [
+        { s: "A", tx: "Buongiorno! Vorrei un chilo di pomodori, per favore.", fr: "Bonjour ! Je voudrais un kilo de tomates, s'il vous plaît." },
+        { s: "B", tx: "Subito. Altro?", fr: "Tout de suite. Autre chose ?" },
+        { s: "A", tx: "Sì, mezzo chilo di mele. Quanto costano?", fr: "Oui, un demi-kilo de pommes. Elles coûtent combien ?" },
+        { s: "B", tx: "Due euro al chilo. Sono dolcissime.", fr: "Deux euros le kilo. Elles sont très sucrées." },
+        { s: "A", tx: "Va bene, le prendo. Quant'è in tutto?", fr: "D'accord, je les prends. Ça fait combien en tout ?" },
+        { s: "B", tx: "In tutto sono quattro euro e cinquanta.", fr: "En tout, ça fait quatre euros cinquante." },
+        { s: "A", tx: "Ecco a lei. Grazie!", fr: "Voilà pour vous. Merci !" },
+        { s: "B", tx: "Grazie a lei, arrivederci!", fr: "Merci à vous, au revoir !" },
+      ],
+      phrases: [
+        { tx: "Vorrei un chilo di pomodori.", fr: "Je voudrais un kilo de tomates." },
+        { tx: "Quanto costa?", fr: "Combien ça coûte ?" },
+        { tx: "Quant'è in tutto?", fr: "Ça fait combien en tout ?" },
+        { tx: "Ecco a lei.", fr: "Voilà pour vous." },
+      ],
+    },
+    {
+      id: "it-hotel", emo: "🏨", level: "A2", title: "In albergo", fr: "À l'hôtel",
+      lines: [
+        { s: "A", tx: "Buongiorno, ho una prenotazione a nome Dupont.", fr: "Bonjour, j'ai une réservation au nom de Dupont." },
+        { s: "B", tx: "Buongiorno! Sì, una camera doppia per tre notti, giusto?", fr: "Bonjour ! Oui, une chambre double pour trois nuits, c'est bien ça ?" },
+        { s: "A", tx: "Esatto. La colazione è inclusa?", fr: "Exact. Le petit-déjeuner est inclus ?" },
+        { s: "B", tx: "Sì, dalle sette alle dieci, al primo piano.", fr: "Oui, de sept heures à dix heures, au premier étage." },
+        { s: "A", tx: "Perfetto. A che ora devo lasciare la camera?", fr: "Parfait. À quelle heure dois-je libérer la chambre ?" },
+        { s: "B", tx: "Il check-out è entro le undici. Ecco la sua chiave, camera 204.", fr: "Le départ est avant onze heures. Voici votre clé, chambre 204." },
+        { s: "A", tx: "Grazie mille. C'è il Wi-Fi in camera?", fr: "Merci beaucoup. Il y a le Wi-Fi dans la chambre ?" },
+        { s: "B", tx: "Certo, la password è sulla chiave. Buon soggiorno!", fr: "Bien sûr, le mot de passe est sur la clé. Bon séjour !" },
+      ],
+      phrases: [
+        { tx: "Ho una prenotazione a nome Dupont.", fr: "J'ai une réservation au nom de Dupont." },
+        { tx: "La colazione è inclusa?", fr: "Le petit-déjeuner est inclus ?" },
+        { tx: "A che ora è il check-out?", fr: "À quelle heure est le départ ?" },
+        { tx: "Buon soggiorno!", fr: "Bon séjour !" },
+      ],
+    },
+    {
+      id: "it-farmacia", emo: "💊", level: "A2", title: "In farmacia", fr: "À la pharmacie",
+      lines: [
+        { s: "A", tx: "Buongiorno, ha qualcosa per il mal di testa?", fr: "Bonjour, vous avez quelque chose pour le mal de tête ?" },
+        { s: "B", tx: "Certo. Da quanto tempo le fa male?", fr: "Bien sûr. Depuis combien de temps avez-vous mal ?" },
+        { s: "A", tx: "Da ieri sera. E ho anche un po' di mal di gola.", fr: "Depuis hier soir. Et j'ai aussi un peu mal à la gorge." },
+        { s: "B", tx: "Le consiglio queste compresse, una ogni otto ore, dopo i pasti.", fr: "Je vous conseille ces comprimés, un toutes les huit heures, après les repas." },
+        { s: "A", tx: "Va bene. Serve la ricetta?", fr: "D'accord. Il faut une ordonnance ?" },
+        { s: "B", tx: "No, non serve. Se non passa in tre giorni, vada dal medico.", fr: "Non, pas besoin. Si ça ne passe pas en trois jours, allez voir le médecin." },
+        { s: "A", tx: "D'accordo. Quanto le devo?", fr: "D'accord. Je vous dois combien ?" },
+        { s: "B", tx: "Sono sei euro e venti. Si riguardi!", fr: "Ça fait six euros vingt. Soignez-vous bien !" },
+      ],
+      phrases: [
+        { tx: "Ha qualcosa per il mal di testa?", fr: "Vous avez quelque chose pour le mal de tête ?" },
+        { tx: "Ho mal di gola.", fr: "J'ai mal à la gorge." },
+        { tx: "Serve la ricetta?", fr: "Il faut une ordonnance ?" },
+        { tx: "Quanto le devo?", fr: "Je vous dois combien ?" },
+      ],
+    },
+  ],
+
+  /* ==================== ESPAGNOL ==================== */
+  es: [
+    {
+      id: "es-presentarse", emo: "👋", level: "A1", title: "Presentarse", fr: "Se présenter",
+      lines: [
+        { s: "A", tx: "¡Hola! ¿Cómo te llamas?", fr: "Salut ! Comment tu t'appelles ?" },
+        { s: "B", tx: "Me llamo Carlos. ¿Y tú?", fr: "Je m'appelle Carlos. Et toi ?" },
+        { s: "A", tx: "Yo soy Julia. ¡Encantada de conocerte!", fr: "Moi, c'est Julia. Enchantée !" },
+        { s: "B", tx: "Encantado. ¿De dónde eres?", fr: "Enchanté. Tu viens d'où ?" },
+        { s: "A", tx: "Soy de París, pero vivo en Madrid desde hace un año.", fr: "Je viens de Paris, mais j'habite à Madrid depuis un an." },
+        { s: "B", tx: "¡Qué bien! ¿Y a qué te dedicas?", fr: "Super ! Et qu'est-ce que tu fais dans la vie ?" },
+        { s: "A", tx: "Trabajo en informática. ¿Y tú?", fr: "Je travaille dans l'informatique. Et toi ?" },
+        { s: "B", tx: "Yo soy profesor. ¡Bienvenida a Madrid!", fr: "Moi, je suis professeur. Bienvenue à Madrid !" },
+      ],
+      phrases: [
+        { tx: "¿Cómo te llamas?", fr: "Comment tu t'appelles ?" },
+        { tx: "¡Encantado de conocerte!", fr: "Enchanté !" },
+        { tx: "¿De dónde eres?", fr: "Tu viens d'où ?" },
+        { tx: "¿A qué te dedicas?", fr: "Qu'est-ce que tu fais dans la vie ?" },
+      ],
+    },
+    {
+      id: "es-restaurante", emo: "🥘", level: "A2", title: "En el restaurante", fr: "Au restaurant",
+      lines: [
+        { s: "A", tx: "¡Buenas noches! Una mesa para dos, por favor.", fr: "Bonsoir ! Une table pour deux, s'il vous plaît." },
+        { s: "B", tx: "Por supuesto, síganme. Aquí tienen la carta.", fr: "Bien sûr, suivez-moi. Voici la carte." },
+        { s: "A", tx: "Gracias. ¿Qué nos recomienda?", fr: "Merci. Que nous recommandez-vous ?" },
+        { s: "B", tx: "La paella está muy buena, y el pescado es fresquísimo.", fr: "La paella est très bonne, et le poisson est très frais." },
+        { s: "A", tx: "Entonces yo quiero la paella y una copa de vino tinto.", fr: "Alors je veux la paella et un verre de vin rouge." },
+        { s: "B", tx: "Perfecto. ¿Y para beber, agua?", fr: "Parfait. Et à boire, de l'eau ?" },
+        { s: "A", tx: "Sí, agua sin gas, gracias.", fr: "Oui, de l'eau plate, merci." },
+        { s: "B", tx: "Muy bien. ¡Buen provecho!", fr: "Très bien. Bon appétit !" },
+        { s: "A", tx: "¡Gracias! Luego nos trae la cuenta, por favor.", fr: "Merci ! Vous nous apporterez l'addition plus tard, s'il vous plaît." },
+      ],
+      phrases: [
+        { tx: "Una mesa para dos, por favor.", fr: "Une table pour deux, s'il vous plaît." },
+        { tx: "¿Qué nos recomienda?", fr: "Que nous recommandez-vous ?" },
+        { tx: "Quiero la paella.", fr: "Je veux la paella." },
+        { tx: "La cuenta, por favor.", fr: "L'addition, s'il vous plaît." },
+      ],
+    },
+    {
+      id: "es-camino", emo: "🗺️", level: "A2", title: "Preguntar el camino", fr: "Demander son chemin",
+      lines: [
+        { s: "A", tx: "Perdone, estoy buscando la estación de tren. ¿Está lejos?", fr: "Excusez-moi, je cherche la gare. C'est loin ?" },
+        { s: "B", tx: "No, está cerca. Siga todo recto y luego gire a la izquierda en el semáforo.", fr: "Non, c'est près. Continuez tout droit puis tournez à gauche au feu." },
+        { s: "A", tx: "Todo recto y a la izquierda en el semáforo. Vale.", fr: "Tout droit et à gauche au feu. D'accord." },
+        { s: "B", tx: "Sí, la estación está a la derecha, a cinco minutos a pie.", fr: "Oui, la gare est à droite, à cinq minutes à pied." },
+        { s: "A", tx: "¿Hay una farmacia por aquí también?", fr: "Il y a aussi une pharmacie par ici ?" },
+        { s: "B", tx: "Sí, justo al lado del banco.", fr: "Oui, juste à côté de la banque." },
+        { s: "A", tx: "Perfecto, ¡muchas gracias por su ayuda!", fr: "Parfait, merci beaucoup pour votre aide !" },
+        { s: "B", tx: "De nada, ¡que tenga un buen día!", fr: "De rien, bonne journée !" },
+      ],
+      phrases: [
+        { tx: "Estoy buscando la estación.", fr: "Je cherche la gare." },
+        { tx: "Siga todo recto.", fr: "Continuez tout droit." },
+        { tx: "Gire a la izquierda.", fr: "Tournez à gauche." },
+        { tx: "¡Muchas gracias por su ayuda!", fr: "Merci beaucoup pour votre aide !" },
+      ],
+    },
+    {
+      id: "es-mercado", emo: "🍅", level: "A1", title: "En el mercado", fr: "Au marché",
+      lines: [
+        { s: "A", tx: "¡Buenos días! Quería un kilo de tomates, por favor.", fr: "Bonjour ! Je voudrais un kilo de tomates, s'il vous plaît." },
+        { s: "B", tx: "Ahora mismo. ¿Algo más?", fr: "Tout de suite. Autre chose ?" },
+        { s: "A", tx: "Sí, medio kilo de manzanas. ¿A cuánto están?", fr: "Oui, un demi-kilo de pommes. Elles sont à combien ?" },
+        { s: "B", tx: "A dos euros el kilo. Están muy dulces.", fr: "À deux euros le kilo. Elles sont très sucrées." },
+        { s: "A", tx: "Vale, me las llevo. ¿Cuánto es todo?", fr: "D'accord, je les prends. Ça fait combien en tout ?" },
+        { s: "B", tx: "En total son cuatro euros con cincuenta.", fr: "En tout, ça fait quatre euros cinquante." },
+        { s: "A", tx: "Aquí tiene. ¡Gracias!", fr: "Voilà pour vous. Merci !" },
+        { s: "B", tx: "Gracias a usted, ¡hasta luego!", fr: "Merci à vous, à bientôt !" },
+      ],
+      phrases: [
+        { tx: "Quería un kilo de tomates.", fr: "Je voudrais un kilo de tomates." },
+        { tx: "¿A cuánto están?", fr: "Elles sont à combien ?" },
+        { tx: "¿Cuánto es todo?", fr: "Ça fait combien en tout ?" },
+        { tx: "Aquí tiene.", fr: "Voilà pour vous." },
+      ],
+    },
+    {
+      id: "es-hotel", emo: "🏨", level: "A2", title: "En el hotel", fr: "À l'hôtel",
+      lines: [
+        { s: "A", tx: "Buenos días, tengo una reserva a nombre de Dupont.", fr: "Bonjour, j'ai une réservation au nom de Dupont." },
+        { s: "B", tx: "¡Buenos días! Sí, una habitación doble para tres noches, ¿verdad?", fr: "Bonjour ! Oui, une chambre double pour trois nuits, c'est ça ?" },
+        { s: "A", tx: "Exacto. ¿El desayuno está incluido?", fr: "Exact. Le petit-déjeuner est inclus ?" },
+        { s: "B", tx: "Sí, de siete a diez, en la primera planta.", fr: "Oui, de sept heures à dix heures, au premier étage." },
+        { s: "A", tx: "Perfecto. ¿A qué hora tengo que dejar la habitación?", fr: "Parfait. À quelle heure dois-je libérer la chambre ?" },
+        { s: "B", tx: "La salida es antes de las once. Aquí tiene su llave, habitación 204.", fr: "Le départ est avant onze heures. Voici votre clé, chambre 204." },
+        { s: "A", tx: "Muchas gracias. ¿Hay wifi en la habitación?", fr: "Merci beaucoup. Il y a le Wi-Fi dans la chambre ?" },
+        { s: "B", tx: "Claro, la contraseña está en la tarjeta. ¡Buena estancia!", fr: "Bien sûr, le mot de passe est sur la carte. Bon séjour !" },
+      ],
+      phrases: [
+        { tx: "Tengo una reserva a nombre de Dupont.", fr: "J'ai une réservation au nom de Dupont." },
+        { tx: "¿El desayuno está incluido?", fr: "Le petit-déjeuner est inclus ?" },
+        { tx: "¿A qué hora es la salida?", fr: "À quelle heure est le départ ?" },
+        { tx: "¡Buena estancia!", fr: "Bon séjour !" },
+      ],
+    },
+    {
+      id: "es-farmacia", emo: "💊", level: "A2", title: "En la farmacia", fr: "À la pharmacie",
+      lines: [
+        { s: "A", tx: "Buenos días, ¿tiene algo para el dolor de cabeza?", fr: "Bonjour, vous avez quelque chose pour le mal de tête ?" },
+        { s: "B", tx: "Claro. ¿Desde cuándo le duele?", fr: "Bien sûr. Depuis quand avez-vous mal ?" },
+        { s: "A", tx: "Desde anoche. Y también me duele un poco la garganta.", fr: "Depuis hier soir. Et j'ai aussi un peu mal à la gorge." },
+        { s: "B", tx: "Le recomiendo estas pastillas, una cada ocho horas, después de las comidas.", fr: "Je vous recommande ces comprimés, un toutes les huit heures, après les repas." },
+        { s: "A", tx: "De acuerdo. ¿Hace falta receta?", fr: "D'accord. Il faut une ordonnance ?" },
+        { s: "B", tx: "No, no hace falta. Si no mejora en tres días, vaya al médico.", fr: "Non, pas besoin. Si ça ne s'améliore pas en trois jours, allez voir le médecin." },
+        { s: "A", tx: "Vale. ¿Cuánto le debo?", fr: "D'accord. Je vous dois combien ?" },
+        { s: "B", tx: "Son seis euros con veinte. ¡Que se mejore!", fr: "Ça fait six euros vingt. Bon rétablissement !" },
+      ],
+      phrases: [
+        { tx: "¿Tiene algo para el dolor de cabeza?", fr: "Vous avez quelque chose pour le mal de tête ?" },
+        { tx: "Me duele la garganta.", fr: "J'ai mal à la gorge." },
+        { tx: "¿Hace falta receta?", fr: "Il faut une ordonnance ?" },
+        { tx: "¿Cuánto le debo?", fr: "Je vous dois combien ?" },
+      ],
+    },
+  ],
+};
+
+
+/* ================= Stockage sûr ================= */
+const store = (() => {
+  let mem = {}, ok = false;
+  try { const k="__dt__"; localStorage.setItem(k,"1"); localStorage.removeItem(k); ok = true; } catch(e){}
+  return {
+    persistent: ok,
+    get(key, fb){ try{ const v = ok ? localStorage.getItem(key) : mem[key]; return v==null?fb:JSON.parse(v);}catch(e){return fb;} },
+    set(key, val){ try{ const s=JSON.stringify(val); if(ok) localStorage.setItem(key,s); else mem[key]=s; }catch(e){} },
+    clear(){ try{ if(ok) localStorage.clear(); mem={}; }catch(e){} }
+  };
+})();
+
+/* ================= État ================= */
+let lang = store.get("lang","it");
+let current = null, mode = "read", revealed = {}, reminderTimer = null;
+const $ = (id)=>document.getElementById(id);
+const todayKey = ()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+
+/* ================= Navigation & toast ================= */
+function show(name){ ["home","dialog","settings"].forEach(n=>$("scr-"+n).classList.toggle("active",n===name)); window.scrollTo(0,0); }
+document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.nav)));
+$("openSettings").addEventListener("click",()=>{ renderProgress(); show("settings"); });
+let toastT=null;
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2600); }
+
+/* ================= Streak ================= */
+function updateStreak(){
+  const s = store.get("streak",{count:0,last:null});
+  const today = todayKey();
+  if (s.last===today) return s.count;
+  const y=new Date(); y.setDate(y.getDate()-1);
+  const yk=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+  s.count = (s.last===yk) ? s.count+1 : 1; s.last=today;
+  store.set("streak",s); return s.count;
+}
+function renderStreak(){
+  const s = store.get("streak",{count:0,last:null});
+  if (s.last){
+    const diff = (new Date(todayKey()+"T00:00:00") - new Date(s.last+"T00:00:00"))/86400000;
+    if (diff>1){ s.count=0; store.set("streak",s); }
+  }
+  $("streakNum").textContent = s.count;
+}
+
+/* ================= Langue & home ================= */
+function renderLangRow(){
+  const row=$("langRow"); row.innerHTML="";
+  Object.keys(LANGS).forEach(l=>{
+    const b=document.createElement("button");
+    b.className="langBtn"+(l===lang?" on":"");
+    b.textContent=LANGS[l].flag+" "+LANGS[l].name;
+    b.addEventListener("click",()=>{ lang=l; store.set("lang",l); renderLangRow(); renderHome(); });
+    row.appendChild(b);
+  });
+  $("hTitle").textContent = LANGS[lang].flag+" "+LANGS[lang].name+(lang==="it"?", ogni giorno.":", cada día.");
+}
+function dialogueOfTheDay(){
+  const list=DIALOGUES[lang];
+  return list[Math.floor(Date.now()/86400000)%list.length];
+}
+function renderHome(){
+  const t=dialogueOfTheDay();
+  $("todayTitle").textContent=t.emo+" "+t.title;
+  $("todayFr").textContent=t.fr;
+  $("todayGo").onclick=()=>openDialogue(t.id);
+  const doneMap=store.get("done",{});
+  const list=$("scenList"); list.innerHTML="";
+  DIALOGUES[lang].forEach(d=>{
+    const b=document.createElement("button");
+    b.className="scen"+(doneMap[lang+":"+d.id]?" done":"");
+    b.innerHTML='<span class="emo">'+d.emo+'</span><span class="t"><b>'+d.title+'</b><small>'+d.fr+'</small></span><span class="lvl">'+d.level+'</span><span class="check">✓</span>';
+    b.addEventListener("click",()=>openDialogue(d.id));
+    list.appendChild(b);
+  });
+}
+
+/* ================= Audio ================= */
+function getVoice(){
+  try{
+    const code = LANGS[lang].tts.slice(0,2);
+    const vs = speechSynthesis.getVoices()||[];
+    return vs.find(v=>v.lang && v.lang.toLowerCase().startsWith(code)) || null;
+  }catch(e){ return null; }
+}
+function speak(text){
+  try{
+    if(!("speechSynthesis" in window)){ toast("Synthèse vocale non disponible."); return; }
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    const v=getVoice(); if(v) u.voice=v;
+    u.lang = v ? v.lang : LANGS[lang].tts; u.rate=0.95;
+    speechSynthesis.speak(u);
+  }catch(e){ toast("Lecture audio impossible."); }
+}
+function playAll(){
+  if(!current) return;
+  try{
+    speechSynthesis.cancel();
+    current.lines.forEach(l=>{
+      const u=new SpeechSynthesisUtterance(l.tx);
+      const v=getVoice(); if(v) u.voice=v;
+      u.lang = v ? v.lang : LANGS[lang].tts; u.rate=0.95;
+      speechSynthesis.speak(u);
+    });
+  }catch(e){ toast("Lecture audio impossible."); }
+}
+
+/* ================= Dialogue ================= */
+function openDialogue(id){
+  current = DIALOGUES[lang].find(d=>d.id===id);
+  mode="read"; revealed={};
+  $("dTitle").textContent=current.emo+" "+current.title;
+  renderModeChips(); renderBubbles(); renderPhrases(); renderCompleteBtn();
+  show("dialog");
+}
+function renderModeChips(){
+  $("modeRead").classList.toggle("on",mode==="read");
+  $("modePractA").classList.toggle("on",mode==="practA");
+  $("modePractB").classList.toggle("on",mode==="practB");
+}
+function renderBubbles(){
+  const wrap=$("bubbles"); wrap.innerHTML="";
+  const hide = mode==="practA"?"A":mode==="practB"?"B":null;
+  current.lines.forEach((l,i)=>{
+    const div=document.createElement("div");
+    const hidden = hide===l.s && !revealed[i];
+    div.className="bub "+l.s+(hidden?" hidden-line":"");
+    div.innerHTML='<span class="who">Speaker '+l.s+'</span><span class="txt">'+l.tx+'</span><span class="fr">'+l.fr+'</span>';
+    const sp=document.createElement("button");
+    sp.className="speak"; sp.setAttribute("aria-label","Écouter"); sp.textContent="🔊";
+    sp.addEventListener("click",(e)=>{e.stopPropagation();speak(l.tx);});
+    div.appendChild(sp);
+    if(hide===l.s) div.addEventListener("click",()=>{ revealed[i]=!revealed[i]; renderBubbles(); });
+    wrap.appendChild(div);
+  });
+}
+function renderPhrases(){
+  const wrap=$("phraseList"); wrap.innerHTML="";
+  current.phrases.forEach(p=>{
+    const d=document.createElement("div"); d.className="phrase";
+    d.innerHTML='<span class="p"><b>'+p.tx+'</b><small>'+p.fr+'</small></span>';
+    const b=document.createElement("button"); b.className="speak2"; b.textContent="🔊";
+    b.setAttribute("aria-label","Écouter la phrase");
+    b.addEventListener("click",()=>speak(p.tx));
+    d.appendChild(b); wrap.appendChild(d);
+  });
+}
+function renderCompleteBtn(){
+  const doneMap=store.get("done",{});
+  const btn=$("btnComplete");
+  const isDone=!!doneMap[lang+":"+current.id];
+  btn.classList.toggle("done",isDone);
+  btn.textContent=isDone?"✓ Pratiqué — bien joué !":"✓ Marquer comme pratiqué";
+}
+$("modeRead").addEventListener("click",()=>{mode="read";revealed={};renderModeChips();renderBubbles();});
+$("modePractA").addEventListener("click",()=>{mode="practA";revealed={};renderModeChips();renderBubbles();toast("Répliques de A masquées : joue le rôle A !");});
+$("modePractB").addEventListener("click",()=>{mode="practB";revealed={};renderModeChips();renderBubbles();toast("Répliques de B masquées : joue le rôle B !");});
+$("toggleFr").addEventListener("click",()=>{
+  const on=$("bubbles").parentElement.classList.toggle("show-fr");
+  $("toggleFr").classList.toggle("on",on);
+});
+$("playAll").addEventListener("click",playAll);
+$("btnComplete").addEventListener("click",()=>{
+  const doneMap=store.get("done",{});
+  doneMap[lang+":"+current.id]=todayKey();
+  store.set("done",doneMap);
+  const n=updateStreak();
+  renderStreak(); renderCompleteBtn(); renderHome();
+  toast("Bravo ! Série : "+n+" jour"+(n>1?"s":"")+" 🔥");
+});
+
+/* ================= Rappel (app ouverte) ================= */
+function scheduleReminder(){
+  clearTimeout(reminderTimer);
+  const cfg=store.get("reminder",null);
+  if(!cfg||!cfg.on) return;
+  const [h,m]=cfg.time.split(":").map(Number);
+  const now=new Date(), target=new Date();
+  target.setHours(h,m,0,0);
+  if(target<=now) target.setDate(target.getDate()+1);
+  reminderTimer=setTimeout(()=>{ fireReminder(); scheduleReminder(); }, target-now);
+}
+function fireReminder(){
+  const msg="C'est l'heure de tes 5 minutes d'italien / espagnol ! 🇮🇹🇪🇸";
+  try{
+    if("Notification" in window && Notification.permission==="granted") new Notification("Daily Talk",{body:msg,icon:"icon-192.png"});
+    else toast(msg);
+  }catch(e){ toast(msg); }
+}
+$("remSave").addEventListener("click",async ()=>{
+  const time=$("remTime").value||"19:00";
+  try{ if("Notification" in window && Notification.permission!=="granted") await Notification.requestPermission(); }catch(e){}
+  store.set("reminder",{on:true,time});
+  scheduleReminder();
+  toast("Rappel activé à "+time+" (app ouverte). Pense à l'alarme Android !");
+});
+$("remOff").addEventListener("click",()=>{
+  store.set("reminder",{on:false,time:$("remTime").value||"19:00"});
+  clearTimeout(reminderTimer);
+  toast("Rappel désactivé.");
+});
+
+/* ================= Progression ================= */
+function renderProgress(){
+  const doneMap=store.get("done",{});
+  const n=Object.keys(doneMap).filter(k=>k.startsWith(lang+":")).length;
+  const s=store.get("streak",{count:0});
+  let txt=n+" / "+DIALOGUES[lang].length+" scénarios ("+LANGS[lang].name+") · Série : "+s.count+" jour"+(s.count>1?"s":"")+".";
+  if(!store.persistent) txt+=" ⚠️ Stockage indisponible dans cet aperçu : tout fonctionnera une fois l'app installée.";
+  $("progText").textContent=txt;
+}
+$("resetBtn").addEventListener("click",()=>{
+  store.clear(); renderStreak(); renderHome(); renderProgress();
+  toast("Progression réinitialisée.");
+});
+
+/* ================= Installation PWA ================= */
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault(); deferredPrompt=e;
+  $("installBar").style.display="block";
+});
+$("installBtn").addEventListener("click",async ()=>{
+  if(!deferredPrompt){ toast("Menu Chrome ⋮ → « Installer l'application »"); return; }
+  deferredPrompt.prompt();
+  const r=await deferredPrompt.userChoice;
+  if(r.outcome==="accepted"){ $("installBar").style.display="none"; toast("App installée ! 🎉"); }
+  deferredPrompt=null;
+});
+window.addEventListener("appinstalled",()=>{ $("installBar").style.display="none"; });
+
+/* ================= Service worker (hors-ligne) ================= */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{ /* aperçu local file:// : ignoré */ });
+  });
+}
+
+/* ================= Init ================= */
+(function init(){
+  renderStreak(); renderLangRow(); renderHome();
+  const cfg=store.get("reminder",null);
+  if(cfg&&cfg.on){ $("remTime").value=cfg.time; scheduleReminder(); }
+  try{ speechSynthesis && speechSynthesis.getVoices(); }catch(e){}
+})();
+</script>
+</body>
+</html>

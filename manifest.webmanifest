@@ -1,0 +1,17 @@
+{
+  "name": "Daily Talk IT·ES",
+  "short_name": "Daily Talk",
+  "description": "Apprendre l'italien et l'espagnol par dialogues, hors-ligne.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#10141F",
+  "theme_color": "#10141F",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
