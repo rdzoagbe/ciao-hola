@@ -40,5 +40,5 @@ pour comparer toi-même.
 
 ## Mise à jour du contenu
 Modifie `DIALOGUES` dans index.html, pousse, puis dans sw.js incrémente
-`CACHE = "ciaohola-v4"` (numéro suivant) pour forcer le rafraîchissement
+`CACHE = "ciaohola-v5"` (numéro suivant) pour forcer le rafraîchissement
 du cache chez les clients.

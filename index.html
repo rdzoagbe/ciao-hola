@@ -99,6 +99,7 @@
   .lresult .verdict{margin:10px 0 6px;font-size:.9rem;font-weight:700;line-height:1.4;}
   .verdict.ok{color:var(--ok);} .verdict.ko{color:#C2364B;} .verdict.mid{color:#B07B00;}
   .lanswer{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;margin-bottom:10px;}
+  .lanswer small{display:block;font-weight:400;font-style:italic;color:var(--mute);font-size:.82rem;margin-top:4px;}
 
   .phrases{margin-top:26px;}
   .phrase{background:var(--card);border:1px solid var(--line);border-radius:14px;
@@ -488,6 +489,7 @@ const store = (() => {
 /* ================= État ================= */
 let lang = store.get("lang","it");
 let current = null, mode = "read", revealed = {}, reminderTimer = null;
+let showFr = store.get("showFr", true);
 const $ = (id)=>document.getElementById(id);
 const todayKey = ()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
 
@@ -633,9 +635,12 @@ function renderCompleteBtn(){
 $("modeRead").addEventListener("click",()=>{leaveListen();mode="read";revealed={};renderModeChips();renderBubbles();});
 $("modePractA").addEventListener("click",()=>{leaveListen();mode="practA";revealed={};renderModeChips();renderBubbles();toast("Répliques de A masquées : joue le rôle A !");});
 $("modePractB").addEventListener("click",()=>{leaveListen();mode="practB";revealed={};renderModeChips();renderBubbles();toast("Répliques de B masquées : joue le rôle B !");});
+function applyFrPref(){
+  $("bubbles").parentElement.classList.toggle("show-fr",showFr);
+  $("toggleFr").classList.toggle("on",showFr);
+}
 $("toggleFr").addEventListener("click",()=>{
-  const on=$("bubbles").parentElement.classList.toggle("show-fr");
-  $("toggleFr").classList.toggle("on",on);
+  showFr=!showFr; store.set("showFr",showFr); applyFrPref();
 });
 $("playAll").addEventListener("click",()=>{
   if(mode==="listen"){ leaveListen(); mode="read"; renderModeChips(); renderBubbles(); }
@@ -734,7 +739,7 @@ function userPrompt(line){
   };
   const showAnswer=(verdictHTML)=>{
     btns.innerHTML="";
-    res.innerHTML=(verdictHTML||"")+'<div class="lanswer">'+esc(line.tx)+'</div>';
+    res.innerHTML=(verdictHTML||"")+'<div class="lanswer">'+esc(line.tx)+'<small>'+esc(line.fr)+'</small></div>';
     speakLine(line.tx,null);
     res.appendChild(contBtn());
   };
@@ -862,7 +867,7 @@ if("serviceWorker" in navigator){
 
 /* ================= Init ================= */
 (function init(){
-  renderStreak(); renderLangRow(); renderHome();
+  renderStreak(); renderLangRow(); renderHome(); applyFrPref();
   const cfg=store.get("reminder",null);
   if(cfg&&cfg.on){ $("remTime").value=cfg.time; scheduleReminder(); }
   try{ speechSynthesis && speechSynthesis.getVoices(); }catch(e){}
