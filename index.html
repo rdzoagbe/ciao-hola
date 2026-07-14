@@ -92,6 +92,14 @@
     position:absolute;inset:auto 12px 10px 12px;font-size:.68rem;font-weight:700;opacity:.85;}
   .bub.hidden-line{padding-bottom:30px;}
 
+  .lprompt{background:var(--card);border:2px dashed var(--cobalt);border-radius:var(--radius);padding:14px;margin-top:4px;}
+  .lprompt b{display:block;margin-bottom:6px;}
+  .lprompt p{font-size:.9rem;color:var(--mute);margin-bottom:10px;line-height:1.5;}
+  .lbtns{display:flex;flex-wrap:wrap;gap:8px;}
+  .lresult .verdict{margin:10px 0 6px;font-size:.9rem;font-weight:700;line-height:1.4;}
+  .verdict.ok{color:var(--ok);} .verdict.ko{color:#C2364B;} .verdict.mid{color:#B07B00;}
+  .lanswer{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;margin-bottom:10px;}
+
   .phrases{margin-top:26px;}
   .phrase{background:var(--card);border:1px solid var(--line);border-radius:14px;
     padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
@@ -167,6 +175,8 @@
       <button class="chip" id="modeRead">📖 Lire</button>
       <button class="chip" id="modePractA">🎭 Jouer A</button>
       <button class="chip" id="modePractB">🎭 Jouer B</button>
+      <button class="chip" id="modeListen">🎧 Écouter &amp; répondre</button>
+      <button class="chip" id="listenRoleBtn" style="display:none">🎭 Je réponds : B</button>
       <button class="chip" id="toggleFr">🇫🇷 Traduction</button>
       <button class="chip" id="playAll">▶️ Tout écouter</button>
     </div>
@@ -482,7 +492,7 @@ const $ = (id)=>document.getElementById(id);
 const todayKey = ()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
 
 /* ================= Navigation & toast ================= */
-function show(name){ ["home","dialog","settings"].forEach(n=>$("scr-"+n).classList.toggle("active",n===name)); window.scrollTo(0,0); }
+function show(name){ leaveListen(); ["home","dialog","settings"].forEach(n=>$("scr-"+n).classList.toggle("active",n===name)); window.scrollTo(0,0); }
 document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.nav)));
 $("openSettings").addEventListener("click",()=>{ renderProgress(); show("settings"); });
 let toastT=null;
@@ -582,6 +592,9 @@ function renderModeChips(){
   $("modeRead").classList.toggle("on",mode==="read");
   $("modePractA").classList.toggle("on",mode==="practA");
   $("modePractB").classList.toggle("on",mode==="practB");
+  $("modeListen").classList.toggle("on",mode==="listen");
+  $("listenRoleBtn").style.display = mode==="listen" ? "" : "none";
+  $("listenRoleBtn").textContent = "🎭 Je réponds : "+listenRole;
 }
 function renderBubbles(){
   const wrap=$("bubbles"); wrap.innerHTML="";
@@ -617,14 +630,160 @@ function renderCompleteBtn(){
   btn.classList.toggle("done",isDone);
   btn.textContent=isDone?"✓ Pratiqué — bien joué !":"✓ Marquer comme pratiqué";
 }
-$("modeRead").addEventListener("click",()=>{mode="read";revealed={};renderModeChips();renderBubbles();});
-$("modePractA").addEventListener("click",()=>{mode="practA";revealed={};renderModeChips();renderBubbles();toast("Répliques de A masquées : joue le rôle A !");});
-$("modePractB").addEventListener("click",()=>{mode="practB";revealed={};renderModeChips();renderBubbles();toast("Répliques de B masquées : joue le rôle B !");});
+$("modeRead").addEventListener("click",()=>{leaveListen();mode="read";revealed={};renderModeChips();renderBubbles();});
+$("modePractA").addEventListener("click",()=>{leaveListen();mode="practA";revealed={};renderModeChips();renderBubbles();toast("Répliques de A masquées : joue le rôle A !");});
+$("modePractB").addEventListener("click",()=>{leaveListen();mode="practB";revealed={};renderModeChips();renderBubbles();toast("Répliques de B masquées : joue le rôle B !");});
 $("toggleFr").addEventListener("click",()=>{
   const on=$("bubbles").parentElement.classList.toggle("show-fr");
   $("toggleFr").classList.toggle("on",on);
 });
-$("playAll").addEventListener("click",playAll);
+$("playAll").addEventListener("click",()=>{
+  if(mode==="listen"){ leaveListen(); mode="read"; renderModeChips(); renderBubbles(); }
+  playAll();
+});
+
+/* ================= Mode Écouter & répondre ================= */
+let listenIdx=0, listenRole="B", listenToken=0;
+
+function leaveListen(){ listenToken++; try{ speechSynthesis.cancel(); }catch(e){} }
+
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function normTxt(s){
+  return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim();
+}
+function sim(a,b){
+  a=normTxt(a); b=normTxt(b);
+  if(!a||!b) return 0;
+  const m=a.length,n=b.length,dp=new Array(n+1);
+  for(let j=0;j<=n;j++) dp[j]=j;
+  for(let i=1;i<=m;i++){
+    let prev=dp[0]; dp[0]=i;
+    for(let j=1;j<=n;j++){
+      const t=dp[j];
+      dp[j]=Math.min(dp[j]+1, dp[j-1]+1, prev+(a[i-1]===b[j-1]?0:1));
+      prev=t;
+    }
+  }
+  return 1-dp[n]/Math.max(m,n);
+}
+
+function bubbleEl(l){
+  const div=document.createElement("div");
+  div.className="bub "+l.s;
+  div.innerHTML='<span class="who">Speaker '+l.s+'</span><span class="txt">'+l.tx+'</span><span class="fr">'+l.fr+'</span>';
+  const sp=document.createElement("button");
+  sp.className="speak"; sp.setAttribute("aria-label","Écouter"); sp.textContent="🔊";
+  sp.addEventListener("click",(e)=>{e.stopPropagation();speak(l.tx);});
+  div.appendChild(sp);
+  return div;
+}
+
+function speakLine(text,onend){
+  const tok=listenToken; let called=false;
+  const done=()=>{ if(called||tok!==listenToken) return; called=true; if(onend) onend(); };
+  try{
+    if(!("speechSynthesis" in window)){ setTimeout(done, 1200+text.length*60); return; }
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    const v=getVoice(); if(v) u.voice=v;
+    u.lang = v ? v.lang : LANGS[lang].tts; u.rate=0.95;
+    u.onend=done; u.onerror=done;
+    speechSynthesis.speak(u);
+    setTimeout(done, 4000+text.length*120); /* filet de sécurité si onend ne vient jamais */
+  }catch(e){ setTimeout(done,1500); }
+}
+
+function startListen(){
+  mode="listen"; revealed={}; listenIdx=0; listenToken++;
+  renderModeChips(); renderListen();
+}
+
+function renderListen(){
+  const tok=listenToken;
+  const wrap=$("bubbles"); wrap.innerHTML="";
+  for(let i=0;i<Math.min(listenIdx,current.lines.length);i++) wrap.appendChild(bubbleEl(current.lines[i]));
+  if(listenIdx>=current.lines.length){
+    const d=document.createElement("div"); d.className="lprompt";
+    d.innerHTML="<b>🎉 Dialogue terminé !</b><p>Bien joué ! Tu peux le marquer comme pratiqué ci-dessous.</p>";
+    wrap.appendChild(d);
+    requestAnimationFrame(()=>window.scrollTo(0,document.body.scrollHeight));
+    return;
+  }
+  const line=current.lines[listenIdx];
+  if(line.s!==listenRole){
+    wrap.appendChild(bubbleEl(line));
+    speakLine(line.tx,()=>{ listenIdx++; setTimeout(()=>{ if(tok===listenToken) renderListen(); },700); });
+  } else {
+    wrap.appendChild(userPrompt(line));
+  }
+  requestAnimationFrame(()=>window.scrollTo(0,document.body.scrollHeight));
+}
+
+function userPrompt(line){
+  const d=document.createElement("div"); d.className="lprompt";
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  d.innerHTML='<b>🎤 À toi de répondre !</b>'+
+    '<p>Dis en '+LANGS[lang].name+' : « <i>'+esc(line.fr)+'</i> »</p>'+
+    '<div class="lbtns"></div><div class="lresult"></div>';
+  const btns=d.querySelector(".lbtns"), res=d.querySelector(".lresult");
+  const contBtn=()=>{
+    const c=document.createElement("button"); c.className="btn"; c.textContent="Continuer →";
+    c.addEventListener("click",()=>{ listenIdx++; renderListen(); });
+    return c;
+  };
+  const showAnswer=(verdictHTML)=>{
+    btns.innerHTML="";
+    res.innerHTML=(verdictHTML||"")+'<div class="lanswer">'+esc(line.tx)+'</div>';
+    speakLine(line.tx,null);
+    res.appendChild(contBtn());
+  };
+  if(SR){
+    const mic=document.createElement("button"); mic.className="btn"; mic.textContent="🎤 Répondre au micro";
+    mic.addEventListener("click",()=>{
+      mic.disabled=true; mic.textContent="🎙️ Parle maintenant…";
+      let got=false;
+      try{
+        const r=new SR();
+        r.lang=LANGS[lang].tts; r.interimResults=false; r.maxAlternatives=3;
+        r.onresult=(ev)=>{
+          got=true;
+          const alts=ev.results[0]; let best=0, heard="";
+          for(let i=0;i<alts.length;i++){
+            const s=sim(alts[i].transcript,line.tx);
+            if(s>=best){ best=s; heard=alts[i].transcript; }
+          }
+          let v;
+          if(best>=0.8) v='<div class="verdict ok">✅ Correct ! Tu as dit « '+esc(heard)+' »</div>';
+          else if(best>=0.55) v='<div class="verdict mid">🟡 Presque ! Tu as dit « '+esc(heard)+' ». La bonne réponse :</div>';
+          else v='<div class="verdict ko">❌ Pas tout à fait. Tu as dit « '+esc(heard)+' ». La bonne réponse :</div>';
+          showAnswer(v);
+        };
+        r.onerror=r.onend=()=>{
+          if(!got){ mic.disabled=false; mic.textContent="🎤 Répondre au micro"; toast("Je n'ai rien entendu — réessaie ou affiche la réponse."); }
+        };
+        r.start();
+      }catch(e){ mic.disabled=false; mic.textContent="🎤 Répondre au micro"; toast("Micro indisponible — affiche la réponse pour vérifier."); }
+    });
+    btns.appendChild(mic);
+  }
+  const rev=document.createElement("button"); rev.className="btn ghost"; rev.textContent="👁 Voir la réponse";
+  rev.addEventListener("click",()=>showAnswer(SR?"":'<div class="verdict mid">Compare avec ce que tu as dit :</div>'));
+  btns.appendChild(rev);
+  if(!SR){
+    const note=document.createElement("div"); note.className="note";
+    note.textContent="Reconnaissance vocale non disponible sur ce navigateur : dis ta réplique à voix haute, puis affiche la réponse pour comparer.";
+    d.appendChild(note);
+  }
+  return d;
+}
+
+$("modeListen").addEventListener("click",startListen);
+$("listenRoleBtn").addEventListener("click",()=>{
+  leaveListen(); listenRole = listenRole==="A" ? "B" : "A";
+  startListen();
+  toast("Tu réponds maintenant pour le rôle "+listenRole+".");
+});
 $("btnComplete").addEventListener("click",()=>{
   const doneMap=store.get("done",{});
   doneMap[lang+":"+current.id]=todayKey();

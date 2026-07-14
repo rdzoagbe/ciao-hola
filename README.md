@@ -1,7 +1,9 @@
 # Ciao·Hola — PWA installable (GitHub Pages)
 
 App web installable pour apprendre l'italien et l'espagnol : dialogues hors-ligne,
-mode jeu de rôle, audio, série de jours. Aucun serveur, aucune donnée envoyée.
+mode jeu de rôle, mode « Écouter & répondre » (l'app joue les répliques du
+partenaire, tu réponds au micro et elle vérifie), audio, série de jours.
+Aucun serveur, aucune donnée envoyée.
 
 ## Déploiement (5 minutes)
 
@@ -30,7 +32,13 @@ Horloge Google → alarme quotidienne, ou événement récurrent Google Agenda.
 ## Voix hors-ligne
 Paramètres Android → Synthèse vocale → Google TTS → télécharger Italiano et Español.
 
+## Mode « Écouter & répondre » — limite honnête
+La vérification au micro utilise la reconnaissance vocale du navigateur
+(Chrome Android : nécessite internet et l'autorisation micro). Sans elle,
+le mode fonctionne quand même : dis ta réplique, puis affiche la réponse
+pour comparer toi-même.
+
 ## Mise à jour du contenu
 Modifie `DIALOGUES` dans index.html, pousse, puis dans sw.js incrémente
-`CACHE = "ciaohola-v3"` (numéro suivant) pour forcer le rafraîchissement
+`CACHE = "ciaohola-v4"` (numéro suivant) pour forcer le rafraîchissement
 du cache chez les clients.
