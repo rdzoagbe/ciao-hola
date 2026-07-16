@@ -10,9 +10,28 @@
 <title>Ciao·Hola — Italiano · Español</title>
 <style>
   :root{
-    --ink:#10141F; --paper:#F3F5F9; --card:#FFFFFF;
+    --ink:#10141F; --brand:#10141F; --paper:#F3F5F9; --card:#FFFFFF;
     --cobalt:#2743E0; --sun:#FFC53D; --mute:#6B7280; --line:#E2E6EF; --ok:#12855F;
+    --accent-soft:#E8ECFF; --done-soft:#E4F4ED; --warn-bg:#FFF7E0; --warn-line:#F2E3AE;
     --radius:18px; font-size:16px;
+    color-scheme:light;
+  }
+  /* ----- Thème sombre : automatique (système) + forçable via data-theme ----- */
+  :root[data-theme="dark"]{
+    --ink:#E9EDF6; --brand:#1B2236; --paper:#0C1018; --card:#161C29;
+    --cobalt:#5B74FF; --sun:#FFC53D; --mute:#9AA4BD; --line:#28303F; --ok:#3FBB8B;
+    --accent-soft:rgba(91,116,255,.18); --done-soft:rgba(63,187,139,.16);
+    --warn-bg:#2A2512; --warn-line:#4A421F;
+    color-scheme:dark;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]):not([data-theme="dark"]){
+      --ink:#E9EDF6; --brand:#1B2236; --paper:#0C1018; --card:#161C29;
+      --cobalt:#5B74FF; --sun:#FFC53D; --mute:#9AA4BD; --line:#28303F; --ok:#3FBB8B;
+      --accent-soft:rgba(91,116,255,.18); --done-soft:rgba(63,187,139,.16);
+      --warn-bg:#2A2512; --warn-line:#4A421F;
+      color-scheme:dark;
+    }
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   body{
@@ -24,7 +43,7 @@
   button:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:8px;}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 
-  header{background:var(--ink);color:#fff;padding:20px 20px 26px;border-radius:0 0 28px 28px;position:relative;}
+  header{background:var(--brand);color:#fff;padding:20px 20px 26px;border-radius:0 0 28px 28px;position:relative;}
   header .brand{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:#9AA4C0;font-weight:700;}
   header h1{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-top:4px;}
   header .sub{color:#B9C1D9;font-size:.88rem;margin-top:2px;}
@@ -36,15 +55,15 @@
 
   main{padding:18px 16px 40px;max-width:560px;margin:0 auto;}
 
-  .installbar{display:none;background:#FFF7E0;border:1px solid #F2E3AE;border-radius:14px;
+  .installbar{display:none;background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:14px;
     padding:12px 14px;margin-bottom:16px;font-size:.85rem;line-height:1.5;}
   .installbar b{display:block;margin-bottom:4px;}
-  .installbar button{background:var(--ink);color:#fff;font-weight:700;padding:8px 16px;border-radius:999px;font-size:.82rem;margin-top:8px;}
+  .installbar button{background:var(--brand);color:#fff;font-weight:700;padding:8px 16px;border-radius:999px;font-size:.82rem;margin-top:8px;}
 
   .langRow{display:flex;gap:8px;margin-bottom:16px;}
   .langBtn{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:999px;
     padding:12px;text-align:center;font-weight:700;color:var(--mute);font-size:.95rem;}
-  .langBtn.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .langBtn.on{background:var(--brand);color:#fff;border-color:var(--brand);}
 
   .today{background:var(--cobalt);color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:22px;
     box-shadow:0 8px 24px rgba(39,67,224,.28);}
@@ -62,9 +81,9 @@
     display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .scen .t{flex:1;min-width:0;} .scen .t b{display:block;font-size:.98rem;}
   .scen .t small{color:var(--mute);font-size:.8rem;}
-  .scen .lvl{font-size:.68rem;font-weight:700;color:var(--cobalt);background:#E8ECFF;padding:3px 8px;border-radius:999px;flex-shrink:0;}
+  .scen .lvl{font-size:.68rem;font-weight:700;color:var(--cobalt);background:var(--accent-soft);padding:3px 8px;border-radius:999px;flex-shrink:0;}
   .scen .check{color:var(--ok);font-weight:800;font-size:1.1rem;display:none;flex-shrink:0;}
-  .scen.done .check{display:block;} .scen.done .emo{background:#E4F4ED;}
+  .scen.done .check{display:block;} .scen.done .emo{background:var(--done-soft);}
 
   .screen{display:none;} .screen.active{display:block;}
   .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
@@ -74,7 +93,7 @@
   .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
   .chip{border:1.5px solid var(--line);background:var(--card);padding:8px 14px;border-radius:999px;
     font-size:.82rem;font-weight:700;color:var(--mute);}
-  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .chip.on{background:var(--brand);color:#fff;border-color:var(--brand);}
 
   .bubbles{display:flex;flex-direction:column;gap:10px;}
   .bub{max-width:86%;padding:12px 14px;border-radius:18px;font-size:.97rem;line-height:1.45;position:relative;}
@@ -109,7 +128,7 @@
   .phrase .speak2{font-size:1rem;width:34px;height:34px;border-radius:50%;background:var(--paper);
     flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 
-  .complete{width:100%;margin-top:24px;background:var(--ink);color:#fff;font-weight:800;
+  .complete{width:100%;margin-top:24px;background:var(--brand);color:#fff;font-weight:800;
     padding:15px;border-radius:999px;font-size:1rem;}
   .complete.done{background:var(--ok);}
 
@@ -120,13 +139,41 @@
     margin:10px 8px 10px 0;background:var(--paper);}
   .btn{background:var(--cobalt);color:#fff;font-weight:700;padding:10px 18px;border-radius:999px;font-size:.88rem;}
   .btn.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line);}
-  .note{font-size:.78rem;color:var(--mute);background:#FFF7E0;border:1px solid #F2E3AE;border-radius:12px;
+  .note{font-size:.78rem;color:var(--mute);background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;
     padding:10px 12px;margin-top:10px;line-height:1.5;}
   .navrow{display:flex;gap:8px;margin-top:22px;}
   .navrow .chip{flex:1;text-align:center;padding:12px;}
 
+  /* ----- Cartes mémo (révision) ----- */
+  .revbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;}
+  .revbar .count{margin-left:auto;font-size:.8rem;font-weight:700;color:var(--mute);}
+  .flash{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 18px;text-align:center;min-height:190px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.06);}
+  .flash .side-label{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--mute);}
+  .flash .fr-cue{font-size:1.15rem;font-weight:700;line-height:1.4;}
+  .flash .target{font-size:1.35rem;font-weight:800;line-height:1.4;color:var(--cobalt);}
+  .flash .target small{display:block;font-size:.86rem;font-weight:500;color:var(--mute);font-style:italic;margin-top:8px;}
+  .flash .bigspeak{font-size:1.1rem;width:46px;height:46px;border-radius:50%;background:var(--sun);color:#10141F;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.18);}
+  .revactions{display:flex;gap:8px;margin-top:14px;}
+  .revactions .btn{flex:1;text-align:center;padding:14px;}
+  .revdone{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;text-align:center;}
+  .revdone b{font-size:1.1rem;display:block;margin-bottom:8px;}
+  .revdone p{color:var(--mute);font-size:.9rem;margin-bottom:14px;line-height:1.5;}
+
+  /* ----- Reconstitution par tuiles (offline) ----- */
+  .tileAns{min-height:44px;border:1.5px dashed var(--line);border-radius:12px;padding:8px;
+    display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px;background:var(--paper);}
+  .tileAns:empty::before{content:"Touche les mots dans l'ordre…";color:var(--mute);font-size:.82rem;font-style:italic;}
+  .tilePool{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .tile{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;
+    font-size:.92rem;font-weight:700;}
+  .tile.used{opacity:.32;pointer-events:none;}
+  .tileAns .tile{background:var(--accent-soft);border-color:transparent;color:var(--cobalt);}
+
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);
-    background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:.88rem;
+    background:var(--brand);color:#fff;padding:12px 20px;border-radius:999px;font-size:.88rem;
     font-weight:700;transition:transform .25s ease;z-index:50;max-width:90vw;text-align:center;}
   .toast.show{transform:translateX(-50%) translateY(0);}
 </style>
@@ -162,7 +209,8 @@
     <div class="scenarios" id="scenList"></div>
 
     <div class="navrow">
-      <button class="chip" id="openSettings">⚙️ Rappel &amp; réglages</button>
+      <button class="chip" id="openReview">🃏 Réviser les phrases</button>
+      <button class="chip" id="openSettings">⚙️ Réglages</button>
     </div>
   </div>
 
@@ -179,6 +227,7 @@
       <button class="chip" id="modeListen">🎧 Écouter &amp; répondre</button>
       <button class="chip" id="listenRoleBtn" style="display:none">🎭 Je réponds : B</button>
       <button class="chip" id="toggleFr">🇫🇷 Traduction</button>
+      <button class="chip" id="toggleSlow">🐢 Ralenti</button>
       <button class="chip" id="playAll">▶️ Tout écouter</button>
     </div>
     <div class="bubbles" id="bubbles"></div>
@@ -187,6 +236,20 @@
       <div id="phraseList"></div>
     </div>
     <button class="complete" id="btnComplete">✓ Marquer comme pratiqué</button>
+  </div>
+
+  <!-- ============ RÉVISION ============ -->
+  <div class="screen" id="scr-review">
+    <div class="topbar">
+      <button class="back" data-nav="home">←</button>
+      <h2>🃏 Cartes mémo</h2>
+    </div>
+    <div class="revbar">
+      <button class="chip" id="revScopeDone">✓ Terminés</button>
+      <button class="chip" id="revScopeAll">🌍 Tous</button>
+      <span class="count" id="revCount">—</span>
+    </div>
+    <div id="revBody"></div>
   </div>
 
   <!-- ============ RÉGLAGES ============ -->
@@ -205,6 +268,15 @@
         <b>Limite technique (vérifiée) :</b> une app web ne peut pas réveiller le téléphone quand elle est fermée.
         Pour un rappel fiable à 100 % : <b>Horloge Google → Alarme quotidienne « Italien/Espagnol »</b>
         ou un événement récurrent Google Agenda avec notification.
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎨 Apparence</h3>
+      <p>Choisis le thème de l'application.</p>
+      <div class="controls" style="margin-bottom:0;">
+        <button class="chip" id="themeAuto">🌗 Auto</button>
+        <button class="chip" id="themeLight">☀️ Clair</button>
+        <button class="chip" id="themeDark">🌙 Sombre</button>
       </div>
     </div>
     <div class="card">
@@ -351,6 +423,120 @@ const DIALOGUES = {
         { tx: "Quanto le devo?", fr: "Je vous dois combien ?" },
       ],
     },
+    {
+      id: "it-aeroporto", emo: "✈️", level: "A2", title: "All'aeroporto", fr: "À l'aéroport",
+      lines: [
+        { s: "A", tx: "Buongiorno, ecco il mio passaporto e la carta d'imbarco.", fr: "Bonjour, voici mon passeport et ma carte d'embarquement." },
+        { s: "B", tx: "Grazie. Ha bagagli da imbarcare?", fr: "Merci. Avez-vous des bagages à enregistrer ?" },
+        { s: "A", tx: "Sì, una valigia. Posso avere un posto vicino al finestrino?", fr: "Oui, une valise. Puis-je avoir une place côté hublot ?" },
+        { s: "B", tx: "Certo. L'imbarco è alle dieci e trenta, uscita quindici.", fr: "Bien sûr. L'embarquement est à dix heures trente, porte quinze." },
+        { s: "A", tx: "Il volo è in orario?", fr: "Le vol est à l'heure ?" },
+        { s: "B", tx: "Sì, per ora è puntuale. Ecco la carta d'imbarco.", fr: "Oui, pour l'instant il est à l'heure. Voici votre carte d'embarquement." },
+        { s: "A", tx: "Dove sono i controlli di sicurezza?", fr: "Où sont les contrôles de sécurité ?" },
+        { s: "B", tx: "Sempre dritto, poi a sinistra. Buon viaggio!", fr: "Tout droit, puis à gauche. Bon voyage !" },
+      ],
+      phrases: [
+        { tx: "Ha bagagli da imbarcare?", fr: "Avez-vous des bagages à enregistrer ?" },
+        { tx: "Un posto vicino al finestrino, per favore.", fr: "Une place côté hublot, s'il vous plaît." },
+        { tx: "Il volo è in orario?", fr: "Le vol est à l'heure ?" },
+        { tx: "Dove sono i controlli di sicurezza?", fr: "Où sont les contrôles de sécurité ?" },
+      ],
+    },
+    {
+      id: "it-taxi", emo: "🚕", level: "A1", title: "In taxi", fr: "En taxi",
+      lines: [
+        { s: "A", tx: "Buonasera, è libero?", fr: "Bonsoir, vous êtes libre ?" },
+        { s: "B", tx: "Sì, salga pure. Dove va?", fr: "Oui, montez. Où allez-vous ?" },
+        { s: "A", tx: "Alla stazione centrale, per favore.", fr: "À la gare centrale, s'il vous plaît." },
+        { s: "B", tx: "Va bene. Ha fretta?", fr: "D'accord. Vous êtes pressé ?" },
+        { s: "A", tx: "Un po', il treno parte tra mezz'ora.", fr: "Un peu, le train part dans une demi-heure." },
+        { s: "B", tx: "Non si preoccupi, arriviamo in tempo.", fr: "Ne vous inquiétez pas, on arrive à temps." },
+        { s: "A", tx: "Quanto costa più o meno?", fr: "Combien ça coûte à peu près ?" },
+        { s: "B", tx: "Circa dodici euro. Eccoci arrivati.", fr: "Environ douze euros. Nous voilà arrivés." },
+      ],
+      phrases: [
+        { tx: "È libero?", fr: "Vous êtes libre ?" },
+        { tx: "Alla stazione, per favore.", fr: "À la gare, s'il vous plaît." },
+        { tx: "Ho fretta.", fr: "Je suis pressé(e)." },
+        { tx: "Quanto costa più o meno?", fr: "Combien ça coûte à peu près ?" },
+      ],
+    },
+    {
+      id: "it-telefonata", emo: "📞", level: "A2", title: "Una telefonata", fr: "Un appel téléphonique",
+      lines: [
+        { s: "A", tx: "Pronto, chi parla?", fr: "Allô, qui est à l'appareil ?" },
+        { s: "B", tx: "Buongiorno, sono Luca. Posso parlare con Anna?", fr: "Bonjour, c'est Luca. Puis-je parler à Anna ?" },
+        { s: "A", tx: "Mi dispiace, in questo momento non c'è.", fr: "Désolé, elle n'est pas là pour le moment." },
+        { s: "B", tx: "Posso lasciare un messaggio?", fr: "Puis-je laisser un message ?" },
+        { s: "A", tx: "Certo, mi dica.", fr: "Bien sûr, dites-moi." },
+        { s: "B", tx: "Le dica che ho chiamato, per favore. Richiamo più tardi.", fr: "Dites-lui que j'ai appelé, s'il vous plaît. Je rappelle plus tard." },
+        { s: "A", tx: "D'accordo, glielo dico.", fr: "D'accord, je le lui dis." },
+        { s: "B", tx: "Grazie mille, buona giornata!", fr: "Merci beaucoup, bonne journée !" },
+      ],
+      phrases: [
+        { tx: "Pronto, chi parla?", fr: "Allô, qui est à l'appareil ?" },
+        { tx: "Posso parlare con Anna?", fr: "Puis-je parler à Anna ?" },
+        { tx: "Posso lasciare un messaggio?", fr: "Puis-je laisser un message ?" },
+        { tx: "Richiamo più tardi.", fr: "Je rappelle plus tard." },
+      ],
+    },
+    {
+      id: "it-conoscenza", emo: "😊", level: "A2", title: "Fare conoscenza", fr: "Faire connaissance",
+      lines: [
+        { s: "A", tx: "Ciao! Anche tu aspetti l'autobus?", fr: "Salut ! Toi aussi tu attends le bus ?" },
+        { s: "B", tx: "Sì, ma è in ritardo come sempre.", fr: "Oui, mais il est en retard comme toujours." },
+        { s: "A", tx: "Vieni spesso da queste parti?", fr: "Tu viens souvent dans le coin ?" },
+        { s: "B", tx: "Abbastanza, lavoro qui vicino. E tu?", fr: "Assez, je travaille tout près. Et toi ?" },
+        { s: "A", tx: "Studio all'università. Ti va un caffè mentre aspettiamo?", fr: "J'étudie à l'université. Ça te dit un café en attendant ?" },
+        { s: "B", tx: "Volentieri! Conosco un bar carino qui all'angolo.", fr: "Avec plaisir ! Je connais un joli café au coin." },
+        { s: "A", tx: "Perfetto. A proposito, io mi chiamo Sara.", fr: "Parfait. Au fait, moi c'est Sara." },
+        { s: "B", tx: "Piacere, Sara. Io sono Davide.", fr: "Enchanté, Sara. Moi c'est Davide." },
+      ],
+      phrases: [
+        { tx: "Vieni spesso da queste parti?", fr: "Tu viens souvent dans le coin ?" },
+        { tx: "Ti va un caffè?", fr: "Ça te dit un café ?" },
+        { tx: "Volentieri!", fr: "Avec plaisir !" },
+        { tx: "A proposito...", fr: "Au fait..." },
+      ],
+    },
+    {
+      id: "it-tempo", emo: "🌦️", level: "A1", title: "Che tempo fa", fr: "Le temps qu'il fait",
+      lines: [
+        { s: "A", tx: "Che tempo fa oggi?", fr: "Quel temps fait-il aujourd'hui ?" },
+        { s: "B", tx: "C'è il sole, ma fa un po' freddo.", fr: "Il y a du soleil, mais il fait un peu froid." },
+        { s: "A", tx: "Pensi che pioverà?", fr: "Tu penses qu'il va pleuvoir ?" },
+        { s: "B", tx: "Forse nel pomeriggio. Prendi l'ombrello.", fr: "Peut-être l'après-midi. Prends le parapluie." },
+        { s: "A", tx: "Buona idea. E domani?", fr: "Bonne idée. Et demain ?" },
+        { s: "B", tx: "Domani dovrebbe fare bel tempo.", fr: "Demain il devrait faire beau." },
+        { s: "A", tx: "Meno male, andiamo al mare!", fr: "Heureusement, on va à la mer !" },
+        { s: "B", tx: "Sì, ma controlla le previsioni.", fr: "Oui, mais vérifie les prévisions." },
+      ],
+      phrases: [
+        { tx: "Che tempo fa?", fr: "Quel temps fait-il ?" },
+        { tx: "Fa freddo.", fr: "Il fait froid." },
+        { tx: "Pensi che pioverà?", fr: "Tu penses qu'il va pleuvoir ?" },
+        { tx: "Fa bel tempo.", fr: "Il fait beau." },
+      ],
+    },
+    {
+      id: "it-vestiti", emo: "👕", level: "A2", title: "Comprare vestiti", fr: "Acheter des vêtements",
+      lines: [
+        { s: "A", tx: "Buongiorno, posso provare questa maglietta?", fr: "Bonjour, puis-je essayer ce t-shirt ?" },
+        { s: "B", tx: "Certo, che taglia porta?", fr: "Bien sûr, quelle taille faites-vous ?" },
+        { s: "A", tx: "La media. Avete anche il colore blu?", fr: "Du M. Vous l'avez aussi en bleu ?" },
+        { s: "B", tx: "Sì, gliela porto subito. Il camerino è là in fondo.", fr: "Oui, je vous l'apporte tout de suite. La cabine est au fond." },
+        { s: "A", tx: "Grazie. Mi sta un po' stretta, ha una taglia più grande?", fr: "Merci. Elle me serre un peu, vous avez une taille au-dessus ?" },
+        { s: "B", tx: "Ecco la taglia large. Come le sta?", fr: "Voici le L. Elle vous va comment ?" },
+        { s: "A", tx: "Perfetta! Quanto viene?", fr: "Parfaite ! Combien ça fait ?" },
+        { s: "B", tx: "Venticinque euro. Può pagare alla cassa.", fr: "Vingt-cinq euros. Vous pouvez payer à la caisse." },
+      ],
+      phrases: [
+        { tx: "Posso provare questo?", fr: "Puis-je essayer ceci ?" },
+        { tx: "Che taglia porta?", fr: "Quelle taille faites-vous ?" },
+        { tx: "Mi sta un po' stretta.", fr: "Ça me serre un peu." },
+        { tx: "Ha una taglia più grande?", fr: "Vous avez une taille au-dessus ?" },
+      ],
+    },
   ],
 
   /* ==================== ESPAGNOL ==================== */
@@ -470,6 +656,120 @@ const DIALOGUES = {
         { tx: "¿Cuánto le debo?", fr: "Je vous dois combien ?" },
       ],
     },
+    {
+      id: "es-aeropuerto", emo: "✈️", level: "A2", title: "En el aeropuerto", fr: "À l'aéroport",
+      lines: [
+        { s: "A", tx: "Buenos días, aquí tiene mi pasaporte y la tarjeta de embarque.", fr: "Bonjour, voici mon passeport et ma carte d'embarquement." },
+        { s: "B", tx: "Gracias. ¿Lleva equipaje para facturar?", fr: "Merci. Avez-vous des bagages à enregistrer ?" },
+        { s: "A", tx: "Sí, una maleta. ¿Puedo tener un asiento junto a la ventanilla?", fr: "Oui, une valise. Puis-je avoir une place côté hublot ?" },
+        { s: "B", tx: "Claro. El embarque es a las diez y media, puerta quince.", fr: "Bien sûr. L'embarquement est à dix heures trente, porte quinze." },
+        { s: "A", tx: "¿El vuelo sale a la hora?", fr: "Le vol est à l'heure ?" },
+        { s: "B", tx: "Sí, de momento va puntual. Aquí tiene su tarjeta de embarque.", fr: "Oui, pour l'instant il est à l'heure. Voici votre carte d'embarquement." },
+        { s: "A", tx: "¿Dónde está el control de seguridad?", fr: "Où est le contrôle de sécurité ?" },
+        { s: "B", tx: "Todo recto, a la izquierda. ¡Buen viaje!", fr: "Tout droit, à gauche. Bon voyage !" },
+      ],
+      phrases: [
+        { tx: "¿Lleva equipaje para facturar?", fr: "Avez-vous des bagages à enregistrer ?" },
+        { tx: "Un asiento junto a la ventanilla, por favor.", fr: "Une place côté hublot, s'il vous plaît." },
+        { tx: "¿El vuelo sale a la hora?", fr: "Le vol est à l'heure ?" },
+        { tx: "¿Dónde está el control de seguridad?", fr: "Où est le contrôle de sécurité ?" },
+      ],
+    },
+    {
+      id: "es-taxi", emo: "🚕", level: "A1", title: "En taxi", fr: "En taxi",
+      lines: [
+        { s: "A", tx: "Buenas noches, ¿está libre?", fr: "Bonsoir, vous êtes libre ?" },
+        { s: "B", tx: "Sí, suba. ¿Adónde va?", fr: "Oui, montez. Où allez-vous ?" },
+        { s: "A", tx: "A la estación central, por favor.", fr: "À la gare centrale, s'il vous plaît." },
+        { s: "B", tx: "Muy bien. ¿Tiene prisa?", fr: "Très bien. Vous êtes pressé ?" },
+        { s: "A", tx: "Un poco, el tren sale en media hora.", fr: "Un peu, le train part dans une demi-heure." },
+        { s: "B", tx: "No se preocupe, llegamos a tiempo.", fr: "Ne vous inquiétez pas, on arrive à temps." },
+        { s: "A", tx: "¿Cuánto cuesta más o menos?", fr: "Combien ça coûte à peu près ?" },
+        { s: "B", tx: "Unos doce euros. Ya hemos llegado.", fr: "Environ douze euros. Nous voilà arrivés." },
+      ],
+      phrases: [
+        { tx: "¿Está libre?", fr: "Vous êtes libre ?" },
+        { tx: "A la estación, por favor.", fr: "À la gare, s'il vous plaît." },
+        { tx: "Tengo prisa.", fr: "Je suis pressé(e)." },
+        { tx: "¿Cuánto cuesta más o menos?", fr: "Combien ça coûte à peu près ?" },
+      ],
+    },
+    {
+      id: "es-llamada", emo: "📞", level: "A2", title: "Una llamada", fr: "Un appel téléphonique",
+      lines: [
+        { s: "A", tx: "¿Diga? ¿Quién es?", fr: "Allô ? Qui est à l'appareil ?" },
+        { s: "B", tx: "Buenos días, soy Luca. ¿Puedo hablar con Ana?", fr: "Bonjour, c'est Luca. Puis-je parler à Ana ?" },
+        { s: "A", tx: "Lo siento, ahora mismo no está.", fr: "Désolé, elle n'est pas là pour le moment." },
+        { s: "B", tx: "¿Puedo dejar un mensaje?", fr: "Puis-je laisser un message ?" },
+        { s: "A", tx: "Claro, dígame.", fr: "Bien sûr, dites-moi." },
+        { s: "B", tx: "Dígale que he llamado, por favor. Llamo más tarde.", fr: "Dites-lui que j'ai appelé, s'il vous plaît. Je rappelle plus tard." },
+        { s: "A", tx: "De acuerdo, se lo digo.", fr: "D'accord, je le lui dis." },
+        { s: "B", tx: "Muchas gracias, ¡buen día!", fr: "Merci beaucoup, bonne journée !" },
+      ],
+      phrases: [
+        { tx: "¿Diga? ¿Quién es?", fr: "Allô ? Qui est à l'appareil ?" },
+        { tx: "¿Puedo hablar con Ana?", fr: "Puis-je parler à Ana ?" },
+        { tx: "¿Puedo dejar un mensaje?", fr: "Puis-je laisser un message ?" },
+        { tx: "Llamo más tarde.", fr: "Je rappelle plus tard." },
+      ],
+    },
+    {
+      id: "es-amigos", emo: "😊", level: "A2", title: "Hacer amigos", fr: "Se faire des amis",
+      lines: [
+        { s: "A", tx: "¡Hola! ¿Tú también esperas el autobús?", fr: "Salut ! Toi aussi tu attends le bus ?" },
+        { s: "B", tx: "Sí, pero llega tarde como siempre.", fr: "Oui, mais il est en retard comme toujours." },
+        { s: "A", tx: "¿Vienes a menudo por aquí?", fr: "Tu viens souvent dans le coin ?" },
+        { s: "B", tx: "Bastante, trabajo aquí cerca. ¿Y tú?", fr: "Assez, je travaille tout près. Et toi ?" },
+        { s: "A", tx: "Estudio en la universidad. ¿Te apetece un café mientras esperamos?", fr: "J'étudie à l'université. Ça te dit un café en attendant ?" },
+        { s: "B", tx: "¡Con mucho gusto! Conozco una cafetería bonita en la esquina.", fr: "Avec plaisir ! Je connais un joli café au coin." },
+        { s: "A", tx: "Perfecto. Por cierto, me llamo Sara.", fr: "Parfait. Au fait, moi c'est Sara." },
+        { s: "B", tx: "Encantado, Sara. Yo soy David.", fr: "Enchanté, Sara. Moi c'est David." },
+      ],
+      phrases: [
+        { tx: "¿Vienes a menudo por aquí?", fr: "Tu viens souvent dans le coin ?" },
+        { tx: "¿Te apetece un café?", fr: "Ça te dit un café ?" },
+        { tx: "¡Con mucho gusto!", fr: "Avec plaisir !" },
+        { tx: "Por cierto...", fr: "Au fait..." },
+      ],
+    },
+    {
+      id: "es-tiempo", emo: "🌦️", level: "A1", title: "El tiempo", fr: "Le temps qu'il fait",
+      lines: [
+        { s: "A", tx: "¿Qué tiempo hace hoy?", fr: "Quel temps fait-il aujourd'hui ?" },
+        { s: "B", tx: "Hace sol, pero hace un poco de frío.", fr: "Il y a du soleil, mais il fait un peu froid." },
+        { s: "A", tx: "¿Crees que va a llover?", fr: "Tu penses qu'il va pleuvoir ?" },
+        { s: "B", tx: "Quizás por la tarde. Coge el paraguas.", fr: "Peut-être l'après-midi. Prends le parapluie." },
+        { s: "A", tx: "Buena idea. ¿Y mañana?", fr: "Bonne idée. Et demain ?" },
+        { s: "B", tx: "Mañana debería hacer buen tiempo.", fr: "Demain il devrait faire beau." },
+        { s: "A", tx: "Menos mal, ¡vamos a la playa!", fr: "Heureusement, on va à la plage !" },
+        { s: "B", tx: "Sí, pero mira el pronóstico.", fr: "Oui, mais regarde les prévisions." },
+      ],
+      phrases: [
+        { tx: "¿Qué tiempo hace?", fr: "Quel temps fait-il ?" },
+        { tx: "Hace frío.", fr: "Il fait froid." },
+        { tx: "¿Crees que va a llover?", fr: "Tu penses qu'il va pleuvoir ?" },
+        { tx: "Hace buen tiempo.", fr: "Il fait beau." },
+      ],
+    },
+    {
+      id: "es-ropa", emo: "👕", level: "A2", title: "Comprar ropa", fr: "Acheter des vêtements",
+      lines: [
+        { s: "A", tx: "Buenos días, ¿puedo probarme esta camiseta?", fr: "Bonjour, puis-je essayer ce t-shirt ?" },
+        { s: "B", tx: "Claro, ¿qué talla usa?", fr: "Bien sûr, quelle taille faites-vous ?" },
+        { s: "A", tx: "La mediana. ¿La tienen también en azul?", fr: "Du M. Vous l'avez aussi en bleu ?" },
+        { s: "B", tx: "Sí, se la traigo enseguida. El probador está al fondo.", fr: "Oui, je vous l'apporte tout de suite. La cabine est au fond." },
+        { s: "A", tx: "Gracias. Me queda un poco ajustada, ¿tiene una talla más grande?", fr: "Merci. Elle me serre un peu, vous avez une taille au-dessus ?" },
+        { s: "B", tx: "Aquí tiene la talla grande. ¿Cómo le queda?", fr: "Voici le L. Elle vous va comment ?" },
+        { s: "A", tx: "¡Perfecta! ¿Cuánto es?", fr: "Parfaite ! Combien ça fait ?" },
+        { s: "B", tx: "Veinticinco euros. Puede pagar en la caja.", fr: "Vingt-cinq euros. Vous pouvez payer à la caisse." },
+      ],
+      phrases: [
+        { tx: "¿Puedo probarme esto?", fr: "Puis-je essayer ceci ?" },
+        { tx: "¿Qué talla usa?", fr: "Quelle taille faites-vous ?" },
+        { tx: "Me queda un poco ajustada.", fr: "Ça me serre un peu." },
+        { tx: "¿Tiene una talla más grande?", fr: "Vous avez une taille au-dessus ?" },
+      ],
+    },
   ],
 };
 
@@ -490,11 +790,25 @@ const store = (() => {
 let lang = store.get("lang","it");
 let current = null, mode = "read", revealed = {}, reminderTimer = null;
 let showFr = store.get("showFr", true);
+let slowAudio = store.get("slowAudio", false);
 const $ = (id)=>document.getElementById(id);
+const rate = ()=> slowAudio ? 0.6 : 0.95;
+
+/* ================= Thème (clair / sombre / auto) ================= */
+function applyTheme(){
+  const t = store.get("theme","auto");
+  const root = document.documentElement;
+  if(t==="light"||t==="dark") root.setAttribute("data-theme",t);
+  else root.removeAttribute("data-theme");
+  ["Auto","Light","Dark"].forEach(k=>{
+    const b=$("theme"+k); if(b) b.classList.toggle("on", t===k.toLowerCase());
+  });
+}
+function setTheme(t){ store.set("theme",t); applyTheme(); }
 const todayKey = ()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
 
 /* ================= Navigation & toast ================= */
-function show(name){ leaveListen(); ["home","dialog","settings"].forEach(n=>$("scr-"+n).classList.toggle("active",n===name)); window.scrollTo(0,0); }
+function show(name){ leaveListen(); leaveReview(); ["home","dialog","review","settings"].forEach(n=>$("scr-"+n).classList.toggle("active",n===name)); window.scrollTo(0,0); }
 document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.nav)));
 $("openSettings").addEventListener("click",()=>{ renderProgress(); show("settings"); });
 let toastT=null;
@@ -565,7 +879,7 @@ function speak(text){
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
     const v=getVoice(); if(v) u.voice=v;
-    u.lang = v ? v.lang : LANGS[lang].tts; u.rate=0.95;
+    u.lang = v ? v.lang : LANGS[lang].tts; u.rate=rate();
     speechSynthesis.speak(u);
   }catch(e){ toast("Lecture audio impossible."); }
 }
@@ -576,7 +890,7 @@ function playAll(){
     current.lines.forEach(l=>{
       const u=new SpeechSynthesisUtterance(l.tx);
       const v=getVoice(); if(v) u.voice=v;
-      u.lang = v ? v.lang : LANGS[lang].tts; u.rate=0.95;
+      u.lang = v ? v.lang : LANGS[lang].tts; u.rate=rate();
       speechSynthesis.speak(u);
     });
   }catch(e){ toast("Lecture audio impossible."); }
@@ -646,6 +960,11 @@ $("playAll").addEventListener("click",()=>{
   if(mode==="listen"){ leaveListen(); mode="read"; renderModeChips(); renderBubbles(); }
   playAll();
 });
+function applySlowPref(){ $("toggleSlow").classList.toggle("on",slowAudio); }
+$("toggleSlow").addEventListener("click",()=>{
+  slowAudio=!slowAudio; store.set("slowAudio",slowAudio); applySlowPref();
+  toast(slowAudio?"Audio ralenti 🐢":"Vitesse normale");
+});
 
 /* ================= Mode Écouter & répondre ================= */
 let listenIdx=0, listenRole="B", listenToken=0;
@@ -692,10 +1011,10 @@ function speakLine(text,onend){
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
     const v=getVoice(); if(v) u.voice=v;
-    u.lang = v ? v.lang : LANGS[lang].tts; u.rate=0.95;
+    u.lang = v ? v.lang : LANGS[lang].tts; u.rate=rate();
     u.onend=done; u.onerror=done;
     speechSynthesis.speak(u);
-    setTimeout(done, 4000+text.length*120); /* filet de sécurité si onend ne vient jamais */
+    setTimeout(done, 4500+text.length*160); /* filet de sécurité si onend ne vient jamais */
   }catch(e){ setTimeout(done,1500); }
 }
 
@@ -772,13 +1091,57 @@ function userPrompt(line){
     });
     btns.appendChild(mic);
   }
+  const tilesBtn=document.createElement("button"); tilesBtn.className="btn ghost"; tilesBtn.textContent="🧩 Reconstituer";
+  tilesBtn.addEventListener("click",buildTiles);
+  btns.appendChild(tilesBtn);
   const rev=document.createElement("button"); rev.className="btn ghost"; rev.textContent="👁 Voir la réponse";
   rev.addEventListener("click",()=>showAnswer(SR?"":'<div class="verdict mid">Compare avec ce que tu as dit :</div>'));
   btns.appendChild(rev);
   if(!SR){
     const note=document.createElement("div"); note.className="note";
-    note.textContent="Reconnaissance vocale non disponible sur ce navigateur : dis ta réplique à voix haute, puis affiche la réponse pour comparer.";
+    note.textContent="Reconnaissance vocale non disponible : reconstitue la phrase avec les tuiles 🧩 (100 % hors-ligne) ou dis ta réplique et affiche la réponse.";
     d.appendChild(note);
+  }
+
+  /* Reconstitution par tuiles — vérification 100 % hors-ligne */
+  function buildTiles(){
+    btns.style.display="none"; res.innerHTML="";
+    const words=line.tx.split(/\s+/).filter(Boolean);
+    const order=words.map((w,i)=>i);
+    for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const tmp=order[i]; order[i]=order[j]; order[j]=tmp; }
+    const ansWrap=document.createElement("div"); ansWrap.className="tileAns";
+    const pool=document.createElement("div"); pool.className="tilePool";
+    const chosen=[]; const poolBtns=[];
+    function usedState(){ poolBtns.forEach(p=>p.el.classList.toggle("used", chosen.indexOf(p.wi)>=0)); }
+    function redraw(){
+      ansWrap.innerHTML="";
+      chosen.forEach((wi,pos)=>{
+        const t=document.createElement("button"); t.className="tile"; t.textContent=words[wi];
+        t.setAttribute("aria-label","Retirer "+words[wi]);
+        t.addEventListener("click",()=>{ chosen.splice(pos,1); usedState(); redraw(); });
+        ansWrap.appendChild(t);
+      });
+    }
+    order.forEach(wi=>{
+      const t=document.createElement("button"); t.className="tile"; t.textContent=words[wi];
+      t.addEventListener("click",()=>{ if(chosen.indexOf(wi)>=0) return; chosen.push(wi); usedState(); redraw(); });
+      poolBtns.push({wi,el:t}); pool.appendChild(t);
+    });
+    res.appendChild(ansWrap); res.appendChild(pool);
+    const row=document.createElement("div"); row.className="lbtns";
+    const check=document.createElement("button"); check.className="btn"; check.textContent="✓ Vérifier";
+    check.addEventListener("click",()=>{
+      if(!chosen.length){ toast("Compose d'abord ta phrase."); return; }
+      const attempt=chosen.map(wi=>words[wi]).join(" ");
+      const ok = normTxt(attempt)===normTxt(line.tx);
+      res.innerHTML="";
+      showAnswer(ok ? '<div class="verdict ok">✅ Correct ! Bien reconstitué.</div>'
+                    : '<div class="verdict ko">❌ Pas encore. La bonne réponse :</div>');
+    });
+    const reset=document.createElement("button"); reset.className="btn ghost"; reset.textContent="↺ Recommencer";
+    reset.addEventListener("click",()=>{ chosen.length=0; usedState(); redraw(); });
+    row.appendChild(check); row.appendChild(reset);
+    res.appendChild(row);
   }
   return d;
 }
@@ -797,6 +1160,76 @@ $("btnComplete").addEventListener("click",()=>{
   renderStreak(); renderCompleteBtn(); renderHome();
   toast("Bravo ! Série : "+n+" jour"+(n>1?"s":"")+" 🔥");
 });
+
+/* ================= Révision (cartes mémo) ================= */
+let revScope="done", revDeck=[], revIdx=0, revFlipped=false, revToken=0;
+function leaveReview(){ revToken++; try{ speechSynthesis.cancel(); }catch(e){} }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function collectPhrases(scope){
+  const doneMap=store.get("done",{}); const out=[];
+  DIALOGUES[lang].forEach(d=>{
+    if(scope==="all" || doneMap[lang+":"+d.id]) d.phrases.forEach(p=>out.push({tx:p.tx,fr:p.fr}));
+  });
+  return out;
+}
+function openReview(){
+  revScope = collectPhrases("done").length>0 ? "done" : "all";
+  startReviewDeck(); show("review");
+}
+function startReviewDeck(){
+  revToken++;
+  $("revScopeDone").classList.toggle("on",revScope==="done");
+  $("revScopeAll").classList.toggle("on",revScope==="all");
+  revDeck=shuffle(collectPhrases(revScope)); revIdx=0; revFlipped=false;
+  renderReview();
+}
+function renderReview(){
+  const body=$("revBody"), cnt=$("revCount");
+  if(!revDeck.length){
+    cnt.textContent="0 phrase";
+    body.innerHTML='<div class="revdone"><b>Aucune phrase à réviser</b><p>Termine un dialogue pour débloquer ses phrases clés, ou choisis « 🌍 Tous » pour réviser toutes les phrases du niveau.</p></div>';
+    return;
+  }
+  if(revIdx>=revDeck.length){
+    cnt.textContent=revDeck.length+" / "+revDeck.length;
+    body.innerHTML='<div class="revdone"><b>🎉 Révision terminée !</b><p>Tu as revu '+revDeck.length+' phrase'+(revDeck.length>1?'s':'')+'. Continue comme ça !</p></div>';
+    const again=document.createElement("button"); again.className="btn"; again.style.width="100%"; again.textContent="↺ Recommencer";
+    again.addEventListener("click",startReviewDeck);
+    body.querySelector(".revdone").appendChild(again);
+    return;
+  }
+  cnt.textContent=(revIdx+1)+" / "+revDeck.length;
+  const card=revDeck[revIdx];
+  const flash=document.createElement("div"); flash.className="flash";
+  if(!revFlipped){
+    flash.innerHTML='<span class="side-label">🇫🇷 Français</span><div class="fr-cue">'+esc(card.fr)+'</div>';
+  } else {
+    flash.innerHTML='<span class="side-label">'+LANGS[lang].flag+' '+esc(LANGS[lang].name)+'</span><div class="target">'+esc(card.tx)+'<small>'+esc(card.fr)+'</small></div>';
+    const sp=document.createElement("button"); sp.className="bigspeak"; sp.textContent="🔊"; sp.setAttribute("aria-label","Écouter");
+    sp.addEventListener("click",()=>speak(card.tx));
+    flash.appendChild(sp);
+  }
+  const actions=document.createElement("div"); actions.className="revactions";
+  if(!revFlipped){
+    const flip=document.createElement("button"); flip.className="btn"; flip.textContent="🔁 Voir la réponse";
+    flip.addEventListener("click",()=>{ revFlipped=true; renderReview(); speak(card.tx); });
+    actions.appendChild(flip);
+  } else {
+    const next=document.createElement("button"); next.className="btn";
+    next.textContent=(revIdx+1<revDeck.length)?"Suivante →":"Terminer ✓";
+    next.addEventListener("click",()=>{ revIdx++; revFlipped=false; renderReview(); });
+    actions.appendChild(next);
+  }
+  body.innerHTML=""; body.appendChild(flash); body.appendChild(actions);
+}
+$("openReview").addEventListener("click",openReview);
+$("revScopeDone").addEventListener("click",()=>{ revScope="done"; startReviewDeck(); });
+$("revScopeAll").addEventListener("click",()=>{ revScope="all"; startReviewDeck(); });
+
+/* ================= Thème (boutons) ================= */
+$("themeAuto").addEventListener("click",()=>setTheme("auto"));
+$("themeLight").addEventListener("click",()=>setTheme("light"));
+$("themeDark").addEventListener("click",()=>setTheme("dark"));
 
 /* ================= Rappel (app ouverte) ================= */
 function scheduleReminder(){
@@ -867,7 +1300,8 @@ if("serviceWorker" in navigator){
 
 /* ================= Init ================= */
 (function init(){
-  renderStreak(); renderLangRow(); renderHome(); applyFrPref();
+  applyTheme();
+  renderStreak(); renderLangRow(); renderHome(); applyFrPref(); applySlowPref();
   const cfg=store.get("reminder",null);
   if(cfg&&cfg.on){ $("remTime").value=cfg.time; scheduleReminder(); }
   try{ speechSynthesis && speechSynthesis.getVoices(); }catch(e){}
