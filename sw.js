@@ -1,5 +1,5 @@
 /* Ciao·Hola — service worker : cache complet pour usage 100% hors-ligne */
-const CACHE = "ciaohola-v2";
+const CACHE = "ciaohola-v5";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (e) => {
